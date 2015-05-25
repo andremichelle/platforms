@@ -109,7 +109,7 @@ function extract( imageData, tileWidth, tileHeight, tolerance )
 		}
 		if( !tileExist )
 		{
-			tiles.push( createTileFrom( sourceArray, sourceWidth, tileX, tileY, tileWidth, tileHeight ) );
+			tiles.push( createTileFrom() );
 		}
 
 		map.push( index );
