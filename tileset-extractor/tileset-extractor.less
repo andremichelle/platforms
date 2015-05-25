@@ -80,6 +80,7 @@ div[stage] {
     display: -webkit-flex;
     table {
       .frame;
+      padding-right: 96px;
       td:first-child {
         .no-select;
         padding-right: 12px;
@@ -94,11 +95,16 @@ div[stage] {
       .no-select;
       flex: 1;
       -webkit-flex: 1;
+      padding-top: 24px;
       margin-left: 12px;
       p {
         margin: 0;
         padding: 0;
-        line-height: 1em;
+        line-height: 1.25em;
+        span:last-child {
+          float: right;
+          display: inline-block;
+        }
       }
       p[fine] {
         color: fade(black, 40%);

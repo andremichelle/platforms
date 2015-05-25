@@ -55,12 +55,19 @@ function onLoad()
 		tileHeight = 0;
 	}
 
-	function log( msg )
+	function log( header, content )
 	{
 		var line = document.createElement( "p" );
 		line.setAttribute( "fine", "" );
-		line.textContent = msg;
-
+		
+		var spanHeader = document.createElement("span");
+		spanHeader.textContent = header;
+		var spanContent = document.createElement("span");
+		spanContent.textContent = content;
+		
+		line.appendChild(spanHeader);
+		line.appendChild(spanContent);
+		
 		console.appendChild( line );
 	}
 
@@ -93,7 +100,7 @@ function onLoad()
 		}
 		if( valid )
 		{
-			log( "map " + numCols + " x " + numRows );
+			log( "Map:", numCols + " x " + numRows );
 		}
 		return valid;
 	}
@@ -110,7 +117,7 @@ function onLoad()
 			sourceWidth = source.width;
 			sourceHeight = source.height;
 
-			log( "size " + sourceWidth + " x " + sourceHeight + "px" );
+			log( "Size:", sourceWidth + " x " + sourceHeight + "px" );
 
 			if( checkSourceSize() )
 				beginExtractionWorker();
@@ -158,9 +165,8 @@ function onLoad()
 				map = data.map;
 				tiles = data.tiles;
 
-				log( "tiles " + tiles.length );
-				log( "time " + data.time + "ms" );
-				log( "complete" );
+				log( "Tiles:", tiles.length );
+				log( "Time:", data.time + "ms" );
 
 				showExtractedTiles();
 
