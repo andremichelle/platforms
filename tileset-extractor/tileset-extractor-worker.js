@@ -77,9 +77,12 @@ function extract( imageData, tileWidth, tileHeight, tolerance )
 
 				for( var i = 0; i < 4; ++i )
 					difference += Math.abs( tile[targetIndex++] - sourceArray[sourceIndex++] );
+
+				if( tolerance < difference )
+					return false;
 			}
 		}
-		return tolerance >= difference;
+		return true;
 	}
 
 	var numCols = (sourceWidth / tileWidth) | 0;
@@ -113,7 +116,7 @@ function extract( imageData, tileWidth, tileHeight, tolerance )
 
 		if( tileIndex % 32 == 0 )
 		{
-			sendProgress( tileIndex / numTiles);
+			sendProgress( tileIndex / numTiles );
 		}
 	}
 	sendResult( tiles, map, startTime );
