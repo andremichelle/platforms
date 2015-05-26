@@ -7,7 +7,7 @@ function onLoad()
 	var tileHeightInput = document.querySelector( 'input[name="tile-height"]' );
 	var toleranceInput = document.querySelector( 'input[name="tolerance"]' );
 	var progress = document.querySelector( 'progress' );
-	var console = document.querySelector( 'div[console]' );
+	var consoleLayer = document.querySelector( 'div[console]' );
 	var tilesLayer = document.querySelector( 'div[tiles]' );
 	var tilesetLayer = document.querySelector( 'div[tileset]' );
 	var resultLayer = document.querySelector( 'div[result]' );
@@ -15,6 +15,7 @@ function onLoad()
 	var downloadMapLink = document.querySelector( "a[download-map]" );
 	var downloadTilesLink = document.querySelector( "a[download-tiles]" );
 	var downloadTileMapLink = document.querySelector( "a[download-tilemap]" );
+	var downloadTiledTMXLink = document.querySelector( "a[download-tmx]" );
 
 	var map = null;
 	var tiles = null;
@@ -22,8 +23,12 @@ function onLoad()
 	var worker = null;
 	var sourceWidth = 0;
 	var sourceHeight = 0;
+	var numCols = 0;
+	var numRows = 0;
 	var tileWidth = 0;
 	var tileHeight = 0;
+	var extractedTilesWidth = 0;
+	var extractedTilesHeight = 0;
 
 	function reset()
 	{
@@ -36,7 +41,7 @@ function onLoad()
 		map = null;
 		tiles = null;
 
-		console.innerHTML = "";
+		consoleLayer.innerHTML = "";
 		tilesLayer.innerHTML = "";
 		tilesetLayer.innerHTML = "";
 		progress.value = 0;
@@ -51,24 +56,28 @@ function onLoad()
 		source = null;
 		sourceWidth = 0;
 		sourceHeight = 0;
+		numCols = 0;
+		numRows = 0;
 		tileWidth = 0;
 		tileHeight = 0;
+		extractedTilesWidth = 0;
+		extractedTilesHeight = 0;
 	}
 
 	function log( header, content )
 	{
 		var line = document.createElement( "p" );
 		line.setAttribute( "fine", "" );
-		
-		var spanHeader = document.createElement("span");
+
+		var spanHeader = document.createElement( "span" );
 		spanHeader.textContent = header;
-		var spanContent = document.createElement("span");
+		var spanContent = document.createElement( "span" );
 		spanContent.textContent = content;
-		
-		line.appendChild(spanHeader);
-		line.appendChild(spanContent);
-		
-		console.appendChild( line );
+
+		line.appendChild( spanHeader );
+		line.appendChild( spanContent );
+
+		consoleLayer.appendChild( line );
 	}
 
 	function error( msg )
@@ -77,15 +86,11 @@ function onLoad()
 		line.setAttribute( "error", "" );
 		line.textContent = msg;
 
-		console.appendChild( line );
+		consoleLayer.appendChild( line );
 	}
 
 	function checkSourceSize()
 	{
-		var tileWidth = tileWidthInput.value;
-		var tileHeight = tileHeightInput.value;
-		var numCols = source.width / tileWidth;
-		var numRows = source.height / tileHeight;
 		var valid = true;
 
 		if( 0 == numCols || numCols != Math.floor( numCols ) )
@@ -98,10 +103,7 @@ function onLoad()
 			error( "image-height not dividable by tile-height." );
 			valid = false;
 		}
-		if( valid )
-		{
-			log( "Map:", numCols + " x " + numRows );
-		}
+
 		return valid;
 	}
 
@@ -117,7 +119,8 @@ function onLoad()
 			sourceWidth = source.width;
 			sourceHeight = source.height;
 
-			log( "Size:", sourceWidth + " x " + sourceHeight + "px" );
+			numCols = sourceWidth / tileWidth;
+			numRows = sourceHeight / tileHeight;
 
 			if( checkSourceSize() )
 				beginExtractionWorker();
@@ -140,8 +143,53 @@ function onLoad()
 		return context.getImageData( 0, 0, source.width, source.height );
 	}
 
+	function exportTiledFormat()
+	{
+		var xmlMap = document.createElement( "map" );
+		xmlMap.setAttribute( "version", "1.0" );
+		xmlMap.setAttribute( "orientation", "orthogonal" );
+		xmlMap.setAttribute( "renderorder", "right-down" );
+		xmlMap.setAttribute( "width", numCols );
+		xmlMap.setAttribute( "height", numRows );
+		xmlMap.setAttribute( "tilewidth", tileWidth );
+		xmlMap.setAttribute( "tileheight", tileHeight );
+		xmlMap.setAttribute( "nextobjectid", "1" );
+
+		var xmlTileSet = document.createElement( "tileset" );
+		xmlTileSet.setAttribute( "firstgid", "1" );
+		xmlTileSet.setAttribute( "name", "tiles" );
+		xmlTileSet.setAttribute( "tilewidth", tileWidth );
+		xmlTileSet.setAttribute( "tileheight", tileHeight );
+		var xmlImage = document.createElement( "image" );
+		xmlImage.setAttribute( "source", "tiles.png" );
+		xmlImage.setAttribute( "width", extractedTilesWidth );
+		xmlImage.setAttribute( "height", extractedTilesHeight );
+		xmlTileSet.appendChild( xmlImage );
+		xmlMap.appendChild( xmlTileSet );
+
+		console.log( extractedTilesWidth, extractedTilesHeight  );
+
+		var xmlLayer = document.createElement( "layer" );
+		xmlLayer.setAttribute( "name", "layer" );
+		xmlLayer.setAttribute( "width", numCols );
+		xmlLayer.setAttribute( "height", numRows );
+		var xmlData = document.createElement( "data" );
+		for( var i = 0, n = map.length; i < n; ++i )
+		{
+			var xmlTile = document.createElement( "tile" );
+			xmlTile.setAttribute( "gid", map[i] + 1 );
+			xmlData.appendChild( xmlTile );
+		}
+		xmlLayer.appendChild( xmlData );
+		xmlMap.appendChild( xmlLayer );
+
+		return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString( xmlMap );
+	}
+
 	function beginExtractionWorker()
 	{
+		log( "Size:", sourceWidth + " x " + sourceHeight + "px" );
+		log( "Map:", numCols + " x " + numRows );
 
 		worker = new Worker( 'tileset-extractor-worker.js' );
 		worker.onmessage = function ( event )
@@ -170,18 +218,17 @@ function onLoad()
 
 				showExtractedTiles();
 
-				var numCols = (source.width / tileWidth) | 0;
-				var numRows = (source.height / tileHeight) | 0;
+				showTileset();
 
-				showTileset( numCols, numRows );
-
-				downloadMapLink.href = window.URL.createObjectURL( new Blob( [JSON.stringify( {
-							map: map,
-							numCols: numCols,
-							numRows: numRows
-						} )], {type: 'text/plain'} )
-				);
 				downloadMapLink.download = "map.json";
+				downloadMapLink.href = window.URL.createObjectURL( new Blob( [JSON.stringify( {
+					map: map,
+					numCols: numCols,
+					numRows: numRows
+				} )], {type: 'text/plain'} ) );
+
+				downloadTiledTMXLink.download = "tiled.tmx";
+				downloadTiledTMXLink.href = window.URL.createObjectURL( new Blob( [exportTiledFormat()], {type: 'text/xml'} ) );
 			}
 		};
 
@@ -210,7 +257,7 @@ function onLoad()
 		downloadTilesLink.download = "tiles.png";
 	}
 
-	function showTileset( numCols, numRows )
+	function showTileset()
 	{
 		var canvas = document.createElement( 'canvas' );
 		canvas.setAttribute( "width", sourceWidth.toString() );
@@ -231,13 +278,18 @@ function onLoad()
 
 	function createTilesDataURL()
 	{
+		// Try to get as squared as possible
+		//
 		var numTiles = tiles.length;
 		var numRows = Math.sqrt( numTiles ) | 0;
 		var numCols = Math.ceil( numTiles / numRows ) | 0;
 
+		extractedTilesWidth = numCols * tileWidth;
+		extractedTilesHeight = numRows * tileHeight;
+
 		var canvas = document.createElement( "canvas" );
-		canvas.setAttribute( "width", (numCols * tileWidth).toString() );
-		canvas.setAttribute( "height", (numRows * tileHeight).toString() );
+		canvas.setAttribute( "width", (extractedTilesWidth).toString() );
+		canvas.setAttribute( "height", (extractedTilesHeight).toString() );
 
 		var context = canvas.getContext( '2d' );
 
