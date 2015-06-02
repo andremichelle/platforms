@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="defrac.ios">
+    <CLASSES>
+      <root url="jar:///Users/andre.michelle/.defrac/sdk/current/lib/defrac-ios.jar!/" />
+      <root url="jar:///Users/andre.michelle/.defrac/sdk/current/lib/defrac-cpp.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="http://javadoc.defrac.com/latest/ios/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

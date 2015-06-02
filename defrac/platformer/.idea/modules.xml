@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.iml" filepath="$PROJECT_DIR$/.idea/platformer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.ios.iml" filepath="$PROJECT_DIR$/.idea/platformer.ios.iml" group="iOS" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.jvm.iml" filepath="$PROJECT_DIR$/.idea/platformer.jvm.iml" group="JVM" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.macro.iml" filepath="$PROJECT_DIR$/.idea/platformer.macro.iml" group="Macros" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.macro.ios.iml" filepath="$PROJECT_DIR$/.idea/platformer.macro.ios.iml" group="Macros" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.macro.jvm.iml" filepath="$PROJECT_DIR$/.idea/platformer.macro.jvm.iml" group="Macros" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.macro.web.iml" filepath="$PROJECT_DIR$/.idea/platformer.macro.web.iml" group="Macros" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/platformer.web.iml" filepath="$PROJECT_DIR$/.idea/platformer.web.iml" group="Web" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="DEFRAC" name="defrac">
+      <configuration>
+        <option name="PLATFORM" value="web" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/bin/java.web" />
+    <output-test url="file://$MODULE_DIR$/bin/test.web" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/src/java.web">
+      <sourceFolder url="file://$MODULE_DIR$/src/java.web" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="defrac (Latest)" jdkType="defrac SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="defrac" level="project" />
+    <orderEntry type="library" name="defrac.web" level="project" />
+    <orderEntry type="module" module-name="platformer" />
+  </component>
+</module>

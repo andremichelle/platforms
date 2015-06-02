@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="defrac.web">
+    <CLASSES>
+      <root url="jar:///Users/andre.michelle/.defrac/sdk/current/lib/defrac-web.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="http://javadoc.defrac.com/latest/web/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
