@@ -1,0 +1,25 @@
+{
+  "name": "platformer",
+  "package": "andre.michelle",
+  "main": "Boot",
+  "version": "1.0",
+  "targets": [
+    "ios",
+    "jvm",
+    "web"
+  ],
+  "debug": "true",
+  "web": {
+    "js": "app.js",
+    "port": 28511,
+    "width": 512,
+    "height": 320,
+    "webp": {
+      "enabled": "true"
+    }
+  },
+  "jvm": {
+    "width": 512,
+    "height": 320
+  }
+}
