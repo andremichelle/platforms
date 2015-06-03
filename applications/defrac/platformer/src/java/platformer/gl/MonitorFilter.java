@@ -53,10 +53,11 @@ public final class MonitorFilter implements Filter
 						"vec2 xy = floor(uv/ratio * u_resolution.zw);" +
 						"vec3 rgb = getPixel(uv/ratio).rgb;" +
 						"float index = mod(xy.x, 3.0);" +
-						"rgb.r *= mix(0.96,1.04,max(0.0,1.0-index));" +
-						"rgb.g *= mix(0.96,1.04,mod(index,2.0));" +
-						"rgb.b *= mix(0.96,1.04,max(0.0,index-1.0));" +
+						"rgb.r *= mix(0.96,1.02,max(0.0,1.0-index));" +
+						"rgb.g *= mix(0.96,1.02,mod(index,2.0));" +
+						"rgb.b *= mix(0.96,1.02,max(0.0,index-1.0));" +
 						"float alpha =" +
+						"mix(1.0,0.96,max(0.0,1.0-mod(xy.y,3.0))) *" +
 						"pow(max(0.0,alphaOver*sin(uv.x*pi)),alphaDecay) *" +
 						"pow(max(0.0,alphaOver*sin(uv.y*pi)),alphaDecay);" +
 						"color.rgb = rgb * alpha;"
