@@ -1,39 +1,57 @@
 package platformer.renderer;
 
 import defrac.display.Texture;
+import defrac.lang.Lists;
 import platformer.gl.GlRenderer;
 import platformer.tmx.MapLayer;
-import platformer.tmx.TileFlags;
 import platformer.tmx.MapTileLayer;
+import platformer.tmx.TileFlags;
 import platformer.tmx.TileSet;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Renders all tiles of the map within the view-port.
- *
+ * <p>
  * Accepts a RowRenderer to draw sprites to enable z-sorting
  *
  * @author Andre Michelle
  */
 public final class TileRenderer implements Renderer
 {
-	public interface DepthRenderer
-	{
-		void beforeRowRender( final int rowIndex );
-	}
-
 	private final RendererContext context;
 	private final MapTileLayer layer;
 
-	@Nullable
-	private DepthRenderer depthRenderer = null;
+	private final List<Sprite> sprites;
 
 	public TileRenderer( @Nonnull final RendererContext context, @Nonnull final MapTileLayer layer )
 	{
 		this.context = context;
 		this.layer = layer;
+
+		sprites = Lists.newLinkedList();
+	}
+
+	/**
+	 * Accepts a sprite to rendered with respect to its depth.
+	 *
+	 * @param sprite The sprite to be rendered.
+	 */
+	public void addSprite( @Nonnull final Sprite sprite )
+	{
+		sprites.add( sprite );
+	}
+
+	/**
+	 * Removes a sprite.
+	 *
+	 * @param sprite The sprite to be removed.
+	 */
+	public void removeSprite( @Nonnull final Sprite sprite )
+	{
+		sprites.remove( sprite );
 	}
 
 	@Override
@@ -74,8 +92,8 @@ public final class TileRenderer implements Renderer
 		{
 			final int dataOffsetH = tileY * mapWidth;
 
-			if( null != depthRenderer )
-				depthRenderer.beforeRowRender( tileY );
+			if( !sprites.isEmpty() )
+				renderSprites( tileY );
 
 			row:
 			for( int tileX = offsetTileX ; tileX < maxTileX ; ++tileX )
@@ -122,17 +140,30 @@ public final class TileRenderer implements Renderer
 		return layer;
 	}
 
-	public void rowRenderer( @Nullable final DepthRenderer value )
-	{
-		depthRenderer = value;
-	}
-
 	@Override
 	public String toString()
 	{
 		return "[TileLayerRenderer" +
 				" layer: " + layer +
-				", rowRenderer: " + depthRenderer +
 				"]";
+	}
+
+	private void renderSprites( final int rowIndex )
+	{
+		Collections.sort( sprites, ( a, b ) -> {
+			if( a.y() > b.y() ) return 1;
+			if( a.y() < b.y() ) return -1;
+			return 0;
+		} );
+
+		for( final Sprite sprite : sprites )
+		{
+			if( rowIndex == sprite.y() / context.tileHeight() + 1 )
+				context.imageRenderer().draw(
+						sprite.texture(),
+						sprite.x() - context.offsetX(),
+						sprite.y() - context.offsetY() - sprite.height() + context.tileHeight(),
+						sprite.width(), sprite.height() );
+		}
 	}
 }

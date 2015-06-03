@@ -8,7 +8,6 @@ import platformer.PlatformerStage;
 import platformer.gl.MonitorFilter;
 import platformer.renderer.ObjectsRenderer;
 import platformer.renderer.Sprite;
-import platformer.renderer.SpriteDepthRenderer;
 import platformer.renderer.TileRenderer;
 import platformer.tmx.MapLayer;
 import platformer.tmx.MapObjectGroupLayer;
@@ -70,14 +69,10 @@ public final class Platformer
 			final Sprite sprite;
 			if( null != renderer && testZSorting )
 			{
-				final SpriteDepthRenderer spriteDepthRenderer = new SpriteDepthRenderer( platformerStage );
-
 				sprite = new TestSprite( 6 * 16, 10 * 16, 0xFFFF0000 );
 
-				spriteDepthRenderer.addSprite( sprite );
-				spriteDepthRenderer.addSprite( new TestSprite( 6 * 16 + 4, 9 * 16 + 8, 0xFFFFFF00 ) );
-
-				renderer.rowRenderer( spriteDepthRenderer::beforeRowRender );
+				renderer.addSprite( sprite );
+				renderer.addSprite( new TestSprite( 6 * 16 + 4, 9 * 16 + 8, 0xFFFFFF00 ) );
 			}
 			else
 			{

@@ -32,12 +32,12 @@ import defrac.ui.Screen;
  * [X] Implement polygon (closed)
  * [X] Find the correct offset(x,y) for tilesets that are not the same tile-size as the map tile-size (render-ordering?)
  * [X] Implement map background color (waiting for a defrac update which allows to decode web colors e.g. #FFF)
+ * [X] Add sprite support within rendering (z-Sorting)
  * [ ] Remove transparent color (shader or boot)
  * [ ] Implement all possible render orderings
  * [ ] Implement all possible orientations
  * [ ] Implement Image Collection
  * [ ] Add Image-Layer support
- * [ ] Add sprite support within rendering (z-Sorting)
  * [ ] Optimise animation lookup > too much GC waste in java.util.HashMap
  * [ ] Implement margin, spacing for tilesets (need test-files)
  * [ ] Implement rotation of objects
