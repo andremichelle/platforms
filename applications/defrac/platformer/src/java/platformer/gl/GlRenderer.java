@@ -34,30 +34,23 @@ public final class GlRenderer
 
 	private static final String fCode =
 			"uniform sampler2D texture;" +
-					"uniform vec3 transparent;" +
 					"uniform float alpha;" +
-					"" +
 					"varying vec2 vUv;" +
-					"" +
 					"void main()" +
 					"{" +
-					"\tvec4 pixel = texture2D( texture, vUv );" +
-					"" +
-					"\tgl_FragColor = vec4( pixel.rgb, pixel.a * alpha );" +
+					" vec4 pixel = texture2D( texture, vUv );" +
+					" gl_FragColor = vec4( pixel.rgb, pixel.a * alpha );" +
 					"}";
 
 	private static final String vCode =
 			"attribute vec3 position;" +
 					"attribute vec2 uv;" +
-					"" +
 					"uniform mat4 pMatrix;" +
-					"" +
 					"varying vec2 vUv;" +
-					"" +
 					"void main()" +
 					"{" +
-					"\tvUv = uv;" +
-					"\tgl_Position = pMatrix * vec4( position.xy, 0, 1 );" +
+					"	vUv = uv;" +
+					"	gl_Position = pMatrix * vec4( position.xy, 0, 1 );" +
 					"}";
 
 	private final GLMatrix glMatrix;
@@ -144,7 +137,7 @@ public final class GlRenderer
 		if( alpha != value )
 		{
 			if( 0 < bufferPointer )
-				sendDraw();
+				call();
 
 			alpha = value;
 
@@ -174,7 +167,6 @@ public final class GlRenderer
 
 	/**
 	 * Draws a texture with flipping options
-	 * <p>
 	 * Each image will be created by 6 vertices and two triangles and added as a geometry
 	 *
 	 * @param texture             The texture to be drawn
@@ -205,13 +197,13 @@ public final class GlRenderer
 		else if( texture.textureData != textureData ) // switch texture
 		{
 			if( 0 < bufferPointer )
-				sendDraw();
+				call();
 
 			textureData = texture.textureData;
 		}
 		else if( bufferPointer + BufferImageSize >= bufferSize ) // avoid overflow
 		{
-			sendDraw();
+			call();
 		}
 
 		float ax = texture.uv00x;
@@ -332,7 +324,7 @@ public final class GlRenderer
 		assert drawPhase : "draw phase out of order";
 
 		if( 0 < bufferPointer )
-			sendDraw();
+			call();
 
 		gl = null;
 		stage = null;
@@ -416,7 +408,7 @@ public final class GlRenderer
 		bufferPointer = 0;
 	}
 
-	private void sendDraw()
+	private void call()
 	{
 		assert drawPhase : "draw phase out of order";
 
