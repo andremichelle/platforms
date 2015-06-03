@@ -40,9 +40,9 @@ public final class MonitorFilter implements Filter
 		//noinspection StringConcatenationInsideStringBufferAppend
 		builder.append( "" +
 						"float pi = 3.141592653589793;" +
-						"float bend = 0.15;" +
-						"float alphaDecay = 0.3;" +
-						"float alphaOver = 1.4;" +
+						"float bend = 0.12;" +
+						"float alphaDecay = 0.2;" +
+						"float alphaOver = 1.8;" +
 						"vec2 ratio = vec2(" + ratioX + ", " + ratioY + ");" +
 						"vec2 uv = v_uv.xy * ratio;" +
 						// Screen displacement
@@ -51,13 +51,15 @@ public final class MonitorFilter implements Filter
 						"uv += center*(1.0+distance)*distance;" +
 						// Scanlines
 						"vec2 xy = floor(uv/ratio * u_resolution.zw);" +
-						"float scanX = floor(mod(xy.x,3.0)*0.5);" +
-						"float scanY = mod(xy.y,2.0);" +
+						"vec3 rgb = getPixel(uv/ratio).rgb;" +
+						"float index = mod(xy.x, 3.0);" +
+						"rgb.r *= mix(0.96,1.04,max(0.0,1.0-index));" +
+						"rgb.g *= mix(0.96,1.04,mod(index,2.0));" +
+						"rgb.b *= mix(0.96,1.04,max(0.0,index-1.0));" +
 						"float alpha =" +
-						"mix(1.0, 0.98, scanX) * mix(0.97, 1.03, scanY) *" +
 						"pow(max(0.0,alphaOver*sin(uv.x*pi)),alphaDecay) *" +
 						"pow(max(0.0,alphaOver*sin(uv.y*pi)),alphaDecay);" +
-						"color.rgb = getPixel(uv/ratio).rgb * alpha;"
+						"color.rgb = rgb * alpha;"
 		);
 	}
 
