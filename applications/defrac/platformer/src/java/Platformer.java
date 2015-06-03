@@ -71,8 +71,8 @@ public final class Platformer
 				} );
 			}
 
-			//backgroundColor( 0x0 );
 			platformerStage.restartTime();
+			stage.backgroundColor( 0xFF000000 );
 
 			System.out.println( "all set... (use cursor keys to navigate)" );
 

@@ -1,6 +1,6 @@
 {
   "name": "platformer",
-  "package": "andre.michelle",
+  "package": "platformer",
   "main": "Boot",
   "version": "1.0",
   "targets": [
@@ -17,7 +17,7 @@
     "webp": {
       "enabled": "true"
     },
-    "debug": "false"
+    "debug": "true"
   },
   "jvm": {
     "width": 384,

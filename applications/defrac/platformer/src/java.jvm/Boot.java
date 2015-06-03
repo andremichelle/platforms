@@ -14,6 +14,7 @@ public final class Boot
 						title( "Test" ).
 						width( 384 ).
 						height( 320 ).
+						title( "Platformer" ).
 						show() );
 	}
 }

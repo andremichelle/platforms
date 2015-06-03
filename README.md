@@ -8,3 +8,4 @@ This app takes an existing tilemap and tries to extract the tiles that were used
 # TMX Renderer
 A defrac project to render the tmx format on all platforms.
 ![Alt text](/~/platformer-screenshot-mario.png?raw=true "Screenshot with super-mario tileset and monitor shading")
+[Example](http://cache.andre-michelle.com/applications/platformer/)
