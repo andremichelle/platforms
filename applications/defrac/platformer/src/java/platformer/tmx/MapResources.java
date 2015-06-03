@@ -98,6 +98,7 @@ public final class MapResources
 		final int tileWidth = jsonObject.getInt( "tilewidth" );
 		final int tileHeight = jsonObject.getInt( "tileheight" );
 		final int nextObjectId = jsonObject.getInt( "nextobjectid" );
+
 		final int backgroundColor = 0xFF000000 | Integer.decode( jsonObject.optString( "backgroundcolor", "#00000000" ) ); // TODO Read as web (6digits > full alpha)
 		final MapOrientation mapOrientation = orientation( checkNotNull( jsonObject.getString( "orientation" ) ) );
 		final MapRenderOrder mapRenderOrder = renderOrder( checkNotNull( jsonObject.getString( "renderorder" ) ) );

@@ -44,12 +44,13 @@ import static java.lang.Math.rint;
  * [X] Render animations
  * [X] Support tile-flipping (horizontally, vertically, diagonally)
  * [X] Draw objects by GL (for debugging, will not be optimised)
- * [ ] Implement polygon (closed)
+ * [X] Implement polygon (closed)
+ * [X] Find the correct offset(x,y) for tilesets that are not the same tile-size as the map tile-size (render-ordering?)
  * [ ] Implement map background color (waiting for a defrac update which allows to decode web colors e.g. #FFF)
- * [ ] Find the correct offset(x,y) for tilesets that are not the same tile-size as the map tile-size (render-ordering?)
  * [ ] Remove transparent color (shader or boot)
  * [ ] Implement all possible render orderings
  * [ ] Implement all possible orientations
+ * [ ] Implement Image Collection
  * [ ] Add Image-Layer support
  * [ ] Add sprite support within rendering (z-Sorting)
  * [ ] Optimise animation lookup > too much GC waste in java.util.HashMap
@@ -83,9 +84,9 @@ public final class Boot extends GenericApp
 	{
 		// Test-Files
 		//
-		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
+//		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
 //		final String levelFile = "zelda.json"; // checks a big map
-//		final String levelFile = "fuzed.json"; // issues with tiles that have a different size (pickups) + transparency
+		final String levelFile = "fuzed.json"; // issues with tiles that have a different size (pickups) + transparency
 
 		System.out.println( "loading " + levelFile );
 

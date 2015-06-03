@@ -103,7 +103,7 @@ public final class TileRenderer implements Renderer
 							glRenderer.draw(
 									texture,
 									tileX * tileWidth - offsetX,
-									tileY * tileHeight - offsetY,
+									( tileY * tileHeight - offsetY ) - tileSet.tileHeight + tileHeight,
 									tileSet.tileWidth, tileSet.tileHeight,
 									flipDiagonally, flipHorizontally, flipVertically );
 						}
