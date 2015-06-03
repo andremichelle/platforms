@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * @author Andre Michelle
  */
-public final class Screen implements GLSurface.Renderer, RendererContext
+public final class PlatformerStage implements GLSurface.Renderer, RendererContext
 {
 	private final MapData mapData;
 	private final int width;
@@ -43,7 +43,7 @@ public final class Screen implements GLSurface.Renderer, RendererContext
 	private int offsetX = 0;
 	private int offsetY = 0;
 
-	public Screen( @Nonnull final MapData mapData, final int width, final int height )
+	public PlatformerStage( @Nonnull final MapData mapData, final int width, final int height )
 	{
 		this.mapData = mapData;
 		this.width = width;

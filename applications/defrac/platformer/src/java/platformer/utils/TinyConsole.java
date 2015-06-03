@@ -1,13 +1,13 @@
 package platformer.utils;
 
-import defrac.display.Image;
+import defrac.display.Canvas;
 import defrac.display.graphics.Graphics;
 import defrac.display.graphics.TextBaseline;
 
 /**
  * @author Andre Michelle
  */
-public final class TinyConsole extends Image
+public final class TinyConsole extends Canvas
 {
 	public static final int Width = 88;
 	public static final int Height = 56;
@@ -24,17 +24,14 @@ public final class TinyConsole extends Image
 
 	private static TinyConsole instance;
 
-	private final Graphics graphics;
-
 	public TinyConsole()
 	{
-		graphics = new Graphics( Width, Height );
-
-		texture( graphics.texture() );
+		super( Width, Height );
 	}
 
 	public void log( final String... lines )
 	{
+		final Graphics graphics = graphics();
 		graphics.clearRect( 0, 0, Width, Height );
 		graphics.fillStyle( 0.15f, 0.15f, 0.15f, 1f );
 		graphics.fillRect( 0, 0, Width, Height );
