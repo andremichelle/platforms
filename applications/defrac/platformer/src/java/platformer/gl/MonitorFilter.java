@@ -54,7 +54,7 @@ public final class MonitorFilter implements Filter
 						"float scanX = floor(mod(xy.x,3.0)*0.5);" +
 						"float scanY = mod(xy.y,2.0);" +
 						"float alpha =" +
-						"mix(1.0, 0.95, scanX) * mix(0.99, 1.01, scanY) *" +
+						"mix(1.0, 0.98, scanX) * mix(0.97, 1.03, scanY) *" +
 						"pow(max(0.0,alphaOver*sin(uv.x*pi)),alphaDecay) *" +
 						"pow(max(0.0,alphaOver*sin(uv.y*pi)),alphaDecay);" +
 						"color.rgb = getPixel(uv/ratio).rgb * alpha;"
