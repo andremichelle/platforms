@@ -19,16 +19,16 @@ import javax.annotation.Nullable;
  */
 public final class TileRenderer implements Renderer
 {
-	public interface RowRenderer
+	public interface DepthRenderer
 	{
-		void renderRow( final int index );
+		void beforeRowRender( final int rowIndex );
 	}
 
 	private final RendererContext context;
 	private final MapTileLayer layer;
 
 	@Nullable
-	private RowRenderer rowRenderer = null;
+	private DepthRenderer depthRenderer = null;
 
 	public TileRenderer( @Nonnull final RendererContext context, @Nonnull final MapTileLayer layer )
 	{
@@ -74,8 +74,8 @@ public final class TileRenderer implements Renderer
 		{
 			final int dataOffsetH = tileY * mapWidth;
 
-			if( null != rowRenderer )
-				rowRenderer.renderRow( tileY );
+			if( null != depthRenderer )
+				depthRenderer.beforeRowRender( tileY );
 
 			row:
 			for( int tileX = offsetTileX ; tileX < maxTileX ; ++tileX )
@@ -122,9 +122,9 @@ public final class TileRenderer implements Renderer
 		return layer;
 	}
 
-	public void rowRenderer( @Nullable final RowRenderer value )
+	public void rowRenderer( @Nullable final DepthRenderer value )
 	{
-		rowRenderer = value;
+		depthRenderer = value;
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public final class TileRenderer implements Renderer
 	{
 		return "[TileLayerRenderer" +
 				" layer: " + layer +
-				", rowRenderer: " + rowRenderer +
+				", rowRenderer: " + depthRenderer +
 				"]";
 	}
 }

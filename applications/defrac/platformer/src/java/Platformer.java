@@ -1,10 +1,14 @@
 import defrac.display.Stage;
 import defrac.display.Stats;
+import defrac.display.Texture;
 import defrac.display.event.UIEventManager;
+import defrac.display.graphics.Graphics;
 import defrac.util.KeyCode;
 import platformer.PlatformerStage;
 import platformer.gl.MonitorFilter;
 import platformer.renderer.ObjectsRenderer;
+import platformer.renderer.Sprite;
+import platformer.renderer.SpriteDepthRenderer;
 import platformer.renderer.TileRenderer;
 import platformer.tmx.MapLayer;
 import platformer.tmx.MapObjectGroupLayer;
@@ -13,6 +17,7 @@ import platformer.tmx.MapTileLayer;
 import platformer.utils.TinyConsole;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static java.lang.Math.rint;
 
@@ -59,16 +64,24 @@ public final class Platformer
 			stage.addChild( TinyConsole.get() ).moveTo( platformerStage.pixelWidth() - TinyConsole.Width, 0f );
 			stage.addChild( new Stats() );
 
+			// Testing z-sorting on super-mario
+			final boolean testZSorting = false;
 			final TileRenderer renderer = ( TileRenderer ) platformerStage.getLayerByName( "solid" ); // mario-1-1.json
-			if( null != renderer )
+			final Sprite sprite;
+			if( null != renderer && testZSorting )
 			{
-				renderer.rowRenderer( ( index ) -> {
-					// TODO Sprite rendering with z-sorting
-					// This is called before a row is rendered.
-					// If you draw your sprites located in this row now,
-					// they will be overridden by the next row (painter's algorithm).
-					// Collisions should do the rest.
-				} );
+				final SpriteDepthRenderer spriteDepthRenderer = new SpriteDepthRenderer( platformerStage );
+
+				sprite = new TestSprite( 6 * 16, 10 * 16, 0xFFFF0000 );
+
+				spriteDepthRenderer.addSprite( sprite );
+				spriteDepthRenderer.addSprite( new TestSprite( 6 * 16 + 4, 9 * 16 + 8, 0xFFFFFF00 ) );
+
+				renderer.rowRenderer( spriteDepthRenderer::beforeRowRender );
+			}
+			else
+			{
+				sprite = null;
 			}
 
 			platformerStage.restartTime();
@@ -85,25 +98,44 @@ public final class Platformer
 				final boolean u = eventManager.isKeyDown( KeyCode.UP );
 				final boolean d = eventManager.isKeyDown( KeyCode.DOWN );
 
-				final double forceX;
-				final double forceY;
+				if( null != sprite && eventManager.isKeyDown( KeyCode.SHIFT ) )
+				{
+					int x = sprite.x();
+					int y = sprite.y();
 
-				if( l && !r )
-					forceX = -Force;
-				else if( r && !l )
-					forceX = Force;
+					if( u )
+						y--;
+					if( d )
+						y++;
+					if( l )
+						x--;
+					if( r )
+						x++;
+
+					sprite.moveTo( x, y );
+				}
 				else
-					forceX = 0.0;
+				{
+					final double forceX;
+					final double forceY;
 
-				if( u && !d )
-					forceY = -Force;
-				else if( d && !u )
-					forceY = Force;
-				else
-					forceY = 0.0;
+					if( l && !r )
+						forceX = -Force;
+					else if( r && !l )
+						forceX = Force;
+					else
+						forceX = 0.0;
 
-				velocityX += forceX;
-				velocityY += forceY;
+					if( u && !d )
+						forceY = -Force;
+					else if( d && !u )
+						forceY = Force;
+					else
+						forceY = 0.0;
+
+					velocityX += forceX;
+					velocityY += forceY;
+				}
 
 				velocityX -= Drag * velocityX;
 				velocityY -= Drag * velocityY;
@@ -120,5 +152,61 @@ public final class Platformer
 				}
 			} );
 		} );
+	}
+
+	private static class TestSprite implements Sprite
+	{
+		private final Graphics graphics;
+
+		private int x;
+		private int y;
+
+		public TestSprite( final int x, final int y, final int color )
+		{
+			this.x = x;
+			this.y = y;
+
+			graphics = new Graphics( 16, 32 );
+			graphics.fillStyle( color );
+			graphics.fillRect( 0, 0, 16, 32 );
+		}
+
+		@Override
+		public void moveTo( final int x, final int y )
+		{
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public int x()
+		{
+			return x;
+		}
+
+		@Override
+		public int y()
+		{
+			return y;
+		}
+
+		@Override
+		public int width()
+		{
+			return 16;
+		}
+
+		@Override
+		public int height()
+		{
+			return 32;
+		}
+
+		@Nullable
+		@Override
+		public Texture texture()
+		{
+			return graphics.texture();
+		}
 	}
 }
