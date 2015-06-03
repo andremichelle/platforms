@@ -31,7 +31,7 @@ import defrac.ui.Screen;
  * [X] Draw objects by GL (for debugging, will not be optimised)
  * [X] Implement polygon (closed)
  * [X] Find the correct offset(x,y) for tilesets that are not the same tile-size as the map tile-size (render-ordering?)
- * [ ] Implement map background color (waiting for a defrac update which allows to decode web colors e.g. #FFF)
+ * [X] Implement map background color (waiting for a defrac update which allows to decode web colors e.g. #FFF)
  * [ ] Remove transparent color (shader or boot)
  * [ ] Implement all possible render orderings
  * [ ] Implement all possible orientations

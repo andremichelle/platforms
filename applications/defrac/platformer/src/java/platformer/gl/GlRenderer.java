@@ -9,6 +9,7 @@ import defrac.gl.GLMatrix;
 import defrac.gl.GLProgram;
 import defrac.gl.GLShader;
 import defrac.gl.GLUniformLocation;
+import defrac.util.Color;
 
 import javax.annotation.Nonnull;
 
@@ -77,6 +78,7 @@ public final class GlRenderer
 	private TextureData textureData;
 	private int bufferPointer;
 	private float alpha;
+	private float[] background = new float[ 4 ];
 
 	// statistics
 	public int drawCalls;
@@ -106,12 +108,13 @@ public final class GlRenderer
 	/**
 	 * Starts the draw phase
 	 *
-	 * @param stage  The current stage
-	 * @param gl     The current GL
-	 * @param width  The width of the view-port
-	 * @param height The height of the view-port
+	 * @param stage           The current stage
+	 * @param gl              The current GL
+	 * @param width           The width of the view-port
+	 * @param height          The height of the view-port
+	 * @param backgroundColor The color of the background
 	 */
-	public void begin( @Nonnull final Stage stage, @Nonnull final GL gl, final float width, final float height )
+	public void begin( @Nonnull final Stage stage, @Nonnull final GL gl, final float width, final float height, final int backgroundColor )
 	{
 		assert !drawPhase : "draw phase out of order";
 
@@ -122,6 +125,7 @@ public final class GlRenderer
 
 		drawCalls = 0;
 		drawTriangles = 0;
+		Color.extract( backgroundColor, background );
 
 		beginGL( width, height );
 	}
@@ -393,8 +397,7 @@ public final class GlRenderer
 		glMatrix.identity();
 		glMatrix.ortho( 0f, width, height, 0f, 0f, 1f );
 
-//		gl.viewport( 0, 0, ( int ) width, ( int ) height );
-		gl.clearColor( 0.5f, 0.6f, 0.8f, 1.0f );
+		gl.clearColor( background[ 0 ], background[ 1 ], background[ 2 ], background[ 3 ] );
 		gl.clear( GL.COLOR_BUFFER_BIT );
 
 		gl.enable( GL.BLEND );

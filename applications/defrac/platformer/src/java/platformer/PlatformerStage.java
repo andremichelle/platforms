@@ -158,7 +158,7 @@ public final class PlatformerStage implements GLSurface.Renderer, RendererContex
 		if( null == stage )
 			return;
 
-		glRenderer.begin( stage, gl, width, height );
+		glRenderer.begin( stage, gl, width, height, mapData.backgroundColor );
 
 		for( final Renderer pipe : renderPipe )
 			pipe.renderLayer();
