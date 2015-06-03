@@ -42,7 +42,7 @@ public final class MonitorFilter implements Filter
 						"float pi = 3.141592653589793;" +
 						"float bend = 0.15;" +
 						"float alphaDecay = 0.3;" +
-						"float alphaOver = 1.25;" +
+						"float alphaOver = 1.4;" +
 						"vec2 ratio = vec2(" + ratioX + ", " + ratioY + ");" +
 						"vec2 uv = v_uv.xy * ratio;" +
 						// Screen displacement
