@@ -84,9 +84,9 @@ public final class Boot extends GenericApp
 	{
 		// Test-Files
 		//
-//		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
+		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
 //		final String levelFile = "zelda.json"; // checks a big map
-		final String levelFile = "fuzed.json"; // issues with tiles that have a different size (pickups) + transparency
+//		final String levelFile = "fuzed.json"; // issues with tiles that have a different size (pickups) + transparency
 
 		System.out.println( "loading " + levelFile );
 
