@@ -25,7 +25,7 @@ public final class MapObjectGroupLayer extends MapLayer
 	@Override
 	public String toString()
 	{
-		return "[ObjectGroupLayer" +
+		return "[MapObjectGroupLayer" +
 				" objects: " + mapObjects +
 				"]";
 	}

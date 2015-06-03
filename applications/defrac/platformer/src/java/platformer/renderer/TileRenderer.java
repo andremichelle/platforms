@@ -27,11 +27,6 @@ public final class TileRenderer implements Renderer
 	private final RendererContext context;
 	private final MapTileLayer layer;
 
-	private final int numRows;
-	private final int numCols;
-	private final int tileWidth;
-	private final int tileHeight;
-
 	@Nullable
 	private RowRenderer rowRenderer = null;
 
@@ -39,12 +34,6 @@ public final class TileRenderer implements Renderer
 	{
 		this.context = context;
 		this.layer = layer;
-
-		numRows = context.height() != layer.height ? context.height() + 1 : context.height();
-		numCols = context.width() != layer.width ? context.width() + 1 : context.width();
-
-		tileWidth = context.tileWidth();
-		tileHeight = context.tileHeight();
 	}
 
 	@Override
@@ -56,6 +45,12 @@ public final class TileRenderer implements Renderer
 		}
 
 		final GlRenderer glRenderer = context.imageRenderer().alpha( layer.opacity );
+
+		final int numRows = context.height() != layer.height ? context.height() + 1 : context.height();
+		final int numCols = context.width() != layer.width ? context.width() + 1 : context.width();
+
+		final int tileWidth = context.tileWidth();
+		final int tileHeight = context.tileHeight();
 
 		final TileSet[] tileSets = context.tileSets();
 
@@ -137,10 +132,6 @@ public final class TileRenderer implements Renderer
 	{
 		return "[TileLayerRenderer" +
 				" layer: " + layer +
-				", numRows: " + numRows +
-				", numCols: " + numCols +
-				", tileWidth: " + tileWidth +
-				", tileHeight: " + tileHeight +
 				", rowRenderer: " + rowRenderer +
 				"]";
 	}

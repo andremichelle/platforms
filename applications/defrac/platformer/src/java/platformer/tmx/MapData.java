@@ -47,7 +47,7 @@ public final class MapData
 	@Override
 	public String toString()
 	{
-		return "[Level" +
+		return "[MapData" +
 				" version: " + version +
 				", width: " + width +
 				", height: " + height +

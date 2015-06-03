@@ -88,7 +88,7 @@ public final class GlRenderer
 	private boolean drawable;
 
 	/**
-	 * @param capacity The number of tiles that can be stored as geometry and send once to the GPU
+	 * @param capacity The number of textures that can be stored as geometry
 	 */
 	public GlRenderer( final int capacity )
 	{

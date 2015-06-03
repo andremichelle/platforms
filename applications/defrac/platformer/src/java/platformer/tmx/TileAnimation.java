@@ -34,7 +34,7 @@ public final class TileAnimation
 	@Override
 	public String toString()
 	{
-		return "[Animation" +
+		return "[TileAnimation" +
 				" frames: " + frames +
 				", duration: " + duration +
 				", oneCycle: " + oneCycle +

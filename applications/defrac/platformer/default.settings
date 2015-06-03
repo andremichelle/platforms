@@ -16,7 +16,8 @@
     "height": 320,
     "webp": {
       "enabled": "true"
-    }
+    },
+    "debug": "false"
   },
   "jvm": {
     "width": 512,

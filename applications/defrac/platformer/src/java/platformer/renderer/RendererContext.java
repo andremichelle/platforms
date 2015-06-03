@@ -31,12 +31,12 @@ public interface RendererContext
 	int mapHeight();
 
 	/**
-	 * @return The tile's width (map)
+	 * @return The tile's width in pixels (map)
 	 */
 	int tileWidth();
 
 	/**
-	 * @return The tile's height (map)
+	 * @return The tile's height in pixels (map)
 	 */
 	int tileHeight();
 
@@ -73,7 +73,7 @@ public interface RendererContext
 	GlRenderer imageRenderer();
 
 	/**
-	 * @return The currentTime for animations
+	 * @return The currentTime in milliseconds for animations
 	 */
 	int currentTime();
 }

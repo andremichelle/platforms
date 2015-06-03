@@ -24,7 +24,7 @@ public final class MapTileLayer extends MapLayer
 	@Override
 	public String toString()
 	{
-		return "[TileLayer" +
+		return "[MapTileLayer" +
 				" x: " + x +
 				", y: " + y +
 				", width: " + width +

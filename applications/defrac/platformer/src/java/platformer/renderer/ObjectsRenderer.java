@@ -2,7 +2,6 @@ package platformer.renderer;
 
 import defrac.display.graphics.Graphics;
 import defrac.geom.Point;
-import platformer.DebugScreen;
 import platformer.tmx.MapLayer;
 import platformer.tmx.MapObject;
 import platformer.tmx.MapObjectGroupLayer;
@@ -19,17 +18,17 @@ import javax.annotation.Nonnull;
  */
 public final class ObjectsRenderer implements Renderer
 {
-	private final DebugScreen screen;
+	private final RendererContext context;
 	private final MapObjectGroupLayer layer;
 
 	private final Graphics graphics;
 
-	public ObjectsRenderer( @Nonnull final DebugScreen screen, @Nonnull final MapObjectGroupLayer layer )
+	public ObjectsRenderer( @Nonnull final RendererContext context, @Nonnull final MapObjectGroupLayer layer )
 	{
-		this.screen = screen;
+		this.context = context;
 		this.layer = layer;
 
-		graphics = new Graphics( screen.pixelWidth(), screen.pixelHeight() );
+		graphics = new Graphics( context.pixelWidth(), context.pixelHeight() );
 	}
 
 	@Override
@@ -38,9 +37,9 @@ public final class ObjectsRenderer implements Renderer
 		if( !layer.visible )
 			return;
 
-		graphics.clearRect( 0, 0, screen.pixelWidth(), screen.pixelHeight() );
+		graphics.clearRect( 0, 0, context.pixelWidth(), context.pixelHeight() );
 
-		for( MapObject mapObject : layer.mapObjects )
+		for( final MapObject mapObject : layer.mapObjects )
 		{
 			if( null == mapObject )
 				continue;
@@ -61,7 +60,7 @@ public final class ObjectsRenderer implements Renderer
 			}
 		}
 
-		screen.imageRenderer().draw( graphics.texture(), 0, 0, screen.pixelWidth(), screen.pixelHeight() );
+		context.imageRenderer().draw( graphics.texture(), 0, 0, context.pixelWidth(), context.pixelHeight() );
 	}
 
 	@Nonnull
@@ -76,8 +75,8 @@ public final class ObjectsRenderer implements Renderer
 		defineStroke();
 
 		graphics.strokeRect(
-				objectRectangle.x - screen.offsetX() + 0.5f,
-				objectRectangle.y - screen.offsetY() + 0.5f,
+				objectRectangle.x - context.offsetX() + 0.5f,
+				objectRectangle.y - context.offsetY() + 0.5f,
 				objectRectangle.width, objectRectangle.height );
 		graphics.stroke();
 	}
@@ -90,8 +89,8 @@ public final class ObjectsRenderer implements Renderer
 		final int height = objectEllipse.height;
 
 		graphics.roundRect(
-				objectEllipse.x - screen.offsetX() + 0.5f,
-				objectEllipse.y - screen.offsetY() + 0.5f,
+				objectEllipse.x - context.offsetX() + 0.5f,
+				objectEllipse.y - context.offsetY() + 0.5f,
 				width, height,
 				width * 0.5f, height * 0.5f );
 
@@ -108,8 +107,8 @@ public final class ObjectsRenderer implements Renderer
 
 		defineStroke();
 
-		final float x = objectPolyLine.x - screen.offsetX() + 0.5f;
-		final float y = objectPolyLine.y - screen.offsetY() + 0.5f;
+		final float x = objectPolyLine.x - context.offsetX() + 0.5f;
+		final float y = objectPolyLine.y - context.offsetY() + 0.5f;
 
 		final Point first = points[ 0 ];
 		graphics.moveTo( x + first.x, y + first.y );

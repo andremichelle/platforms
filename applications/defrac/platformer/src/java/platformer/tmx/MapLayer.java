@@ -23,7 +23,7 @@ public abstract class MapLayer extends MapObject
 	@Override
 	public String toString()
 	{
-		return "[Layer" +
+		return "[MapLayer" +
 				" x: " + x +
 				", y: " + y +
 				", width: " + width +
