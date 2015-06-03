@@ -5958,7 +5958,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="polyline">
+ <objectgroup name="polyline" visible="0">
   <object id="2" x="0" y="192">
    <polyline points="0,0 448,0 448,-32 480,-32 480,0 608,0 608,-48 640,-48 640,0 736,0 736,-64 768,-64 768,0 912,0 912,-64 944,-64 944,0 1104,0 1104,32"/>
   </object>

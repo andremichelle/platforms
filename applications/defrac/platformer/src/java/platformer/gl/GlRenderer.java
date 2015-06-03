@@ -17,9 +17,9 @@ import static platformer.gl.GlUtils.linkProgram;
 
 /**
  * A Renderer that draws images to the current GLSurface.
- *
+ * <p>
  * All draws will be written as geometry and only send to the GPU when the alpha value or texture changes.
- *
+ * <p>
  * TODO ReInit when GL context is broken (never happened while testing, but is assumed on certain platforms)
  *
  * @author Andre Michelle
@@ -33,31 +33,31 @@ public final class GlRenderer
 
 	private static final String fCode =
 			"uniform sampler2D texture;" +
-			"uniform vec3 transparent;" +
-			"uniform float alpha;" +
-			"" +
-			"varying vec2 vUv;" +
-			"" +
-			"void main()" +
-			"{" +
-			"\tvec4 pixel = texture2D( texture, vUv );" +
-			"" +
-			"\tgl_FragColor = vec4( pixel.rgb, pixel.a * alpha );" +
-			"}";
+					"uniform vec3 transparent;" +
+					"uniform float alpha;" +
+					"" +
+					"varying vec2 vUv;" +
+					"" +
+					"void main()" +
+					"{" +
+					"\tvec4 pixel = texture2D( texture, vUv );" +
+					"" +
+					"\tgl_FragColor = vec4( pixel.rgb, pixel.a * alpha );" +
+					"}";
 
 	private static final String vCode =
 			"attribute vec3 position;" +
-			"attribute vec2 uv;" +
-			"" +
-			"uniform mat4 pMatrix;" +
-			"" +
-			"varying vec2 vUv;" +
-			"" +
-			"void main()" +
-			"{" +
-			"\tvUv = uv;" +
-			"\tgl_Position = pMatrix * vec4( position.xy, 0, 1 );" +
-			"}";
+					"attribute vec2 uv;" +
+					"" +
+					"uniform mat4 pMatrix;" +
+					"" +
+					"varying vec2 vUv;" +
+					"" +
+					"void main()" +
+					"{" +
+					"\tvUv = uv;" +
+					"\tgl_Position = pMatrix * vec4( position.xy, 0, 1 );" +
+					"}";
 
 	private final GLMatrix glMatrix;
 	private final float[] buffer;
@@ -80,7 +80,7 @@ public final class GlRenderer
 
 	// statistics
 	public int drawCalls;
-	public int drawImages;
+	public int drawTriangles;
 
 	// current state
 	private boolean initGL = true; // must be set to true when GLContext is broken
@@ -105,9 +105,10 @@ public final class GlRenderer
 
 	/**
 	 * Starts the draw phase
-	 * @param stage The current stage
-	 * @param gl The current GL
-	 * @param width The width of the view-port
+	 *
+	 * @param stage  The current stage
+	 * @param gl     The current GL
+	 * @param width  The width of the view-port
 	 * @param height The height of the view-port
 	 */
 	public void begin( @Nonnull final Stage stage, @Nonnull final GL gl, final float width, final float height )
@@ -120,7 +121,7 @@ public final class GlRenderer
 		this.gl = gl;
 
 		drawCalls = 0;
-		drawImages = 0;
+		drawTriangles = 0;
 
 		beginGL( width, height );
 	}
@@ -129,7 +130,6 @@ public final class GlRenderer
 	 * Switches to a new alpha value for upcoming images
 	 *
 	 * @param value The new alpha value
-	 *
 	 * @return GlRenderer to chain method calls
 	 */
 	@Nonnull
@@ -155,10 +155,10 @@ public final class GlRenderer
 	 * Draws a texture
 	 *
 	 * @param texture The texture to be drawn
-	 * @param x The x-coordinate where to draw
-	 * @param y The y-coordinate where to draw
-	 * @param w The width of the image
-	 * @param h The height of the image
+	 * @param x       The x-coordinate where to draw
+	 * @param y       The y-coordinate where to draw
+	 * @param w       The width of the image
+	 * @param h       The height of the image
 	 */
 	public void draw(
 			final Texture texture,
@@ -170,17 +170,17 @@ public final class GlRenderer
 
 	/**
 	 * Draws a texture with flipping options
-	 *
+	 * <p>
 	 * Each image will be created by 6 vertices and two triangles and added as a geometry
 	 *
-	 * @param texture The texture to be drawn
-	 * @param x The x-coordinate where to draw
-	 * @param y The y-coordinate where to draw
-	 * @param w The width of the image
-	 * @param h The height of the image
-	 * @param flippedDiagonally True is the image should be switched diagonally
+	 * @param texture             The texture to be drawn
+	 * @param x                   The x-coordinate where to draw
+	 * @param y                   The y-coordinate where to draw
+	 * @param w                   The width of the image
+	 * @param h                   The height of the image
+	 * @param flippedDiagonally   True is the image should be switched diagonally
 	 * @param flippedHorizontally True is the image should be switched horizontally
-	 * @param flippedVertically True is the image should be switched vertically
+	 * @param flippedVertically   True is the image should be switched vertically
 	 */
 	public void draw(
 			final Texture texture,
@@ -317,7 +317,7 @@ public final class GlRenderer
 		buffer[ bufferPointer++ ] = bx;
 		buffer[ bufferPointer++ ] = by;
 
-		drawImages++;
+		drawTriangles += 2;
 	}
 
 	/**
@@ -393,7 +393,8 @@ public final class GlRenderer
 		glMatrix.identity();
 		glMatrix.ortho( 0f, width, height, 0f, 0f, 1f );
 
-		gl.clearColor( 0.5f, 0.6f, 0.8f, 0.0f );
+//		gl.viewport( 0, 0, ( int ) width, ( int ) height );
+		gl.clearColor( 0.5f, 0.6f, 0.8f, 1.0f );
 		gl.clear( GL.COLOR_BUFFER_BIT );
 
 		gl.enable( GL.BLEND );

@@ -4,9 +4,14 @@ import defrac.display.Stats;
 import defrac.display.event.UIEventManager;
 import defrac.event.Events;
 import defrac.util.KeyCode;
-import platformer.DebugScreen;
+import platformer.Screen;
+import platformer.gl.MonitorFilter;
+import platformer.renderer.ObjectsRenderer;
 import platformer.renderer.TileRenderer;
+import platformer.tmx.MapLayer;
+import platformer.tmx.MapObjectGroupLayer;
 import platformer.tmx.MapResources;
+import platformer.tmx.MapTileLayer;
 import platformer.utils.TinyConsole;
 
 import static java.lang.Math.rint;
@@ -87,17 +92,26 @@ public final class Boot extends GenericApp
 		MapResources.load( levelFile ).onSuccess( map -> {
 			System.out.println( "loaded " + map );
 
-			final DebugScreen screen = new DebugScreen( map, 32, 14 );
+			final Screen screen = new Screen( map, 24, 14 );
 
-			stage().addChild( screen.displayObject() ).moveTo( 0f, 64f );
+			for( final MapLayer mapLayer : map.mapLayers )
+			{
+				final Class<? extends MapLayer> layerClass = mapLayer.getClass();
+
+				if( MapTileLayer.class.equals( layerClass ) )
+					screen.addRenderer( new TileRenderer( screen, ( MapTileLayer ) mapLayer ) );
+				else if( MapObjectGroupLayer.class.equals( layerClass ) )
+					screen.addRenderer( new ObjectsRenderer( screen, ( MapObjectGroupLayer ) mapLayer ) );
+			}
+
+			stage().addChild( screen.displayObject() ).moveTo( 0f, 64f ).filter( new MonitorFilter() );
 			stage().addChild( TinyConsole.get() ).moveTo( screen.pixelWidth() - TinyConsole.Width, 0f );
 			stage().addChild( new Stats() );
 
 			final TileRenderer renderer = ( TileRenderer ) screen.getLayerByName( "solid" ); // mario-1-1.json
-
 			if( null != renderer )
 			{
-				renderer.rowRenderer( (index) -> {
+				renderer.rowRenderer( ( index ) -> {
 					// TODO Sprite rendering with z-sorting
 					// This is called before a row is rendered.
 					// If you draw your sprites located in this row now,
@@ -106,9 +120,10 @@ public final class Boot extends GenericApp
 				} );
 			}
 
-			System.out.println( "all set... (use cursor keys to navigate)" );
-
+			backgroundColor( 0x0 );
 			screen.restartTime();
+
+			System.out.println( "all set... (use cursor keys to navigate)" );
 
 			final UIEventManager eventManager = stage().eventManager();
 
