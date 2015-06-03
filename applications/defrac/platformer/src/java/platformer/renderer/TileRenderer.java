@@ -159,11 +159,18 @@ public final class TileRenderer implements Renderer
 		for( final Sprite sprite : sprites )
 		{
 			if( rowIndex == sprite.y() / context.tileHeight() + 1 )
-				context.imageRenderer().draw(
-						sprite.texture(),
-						sprite.x() - context.offsetX(),
-						sprite.y() - context.offsetY() - sprite.height() + context.tileHeight(),
-						sprite.width(), sprite.height() );
+			{
+				final Texture texture = sprite.texture();
+
+				if( null != texture )
+				{
+					context.imageRenderer().draw(
+							texture,
+							sprite.x() - context.offsetX(),
+							sprite.y() - context.offsetY() - sprite.height() + context.tileHeight(),
+							sprite.width(), sprite.height() );
+				}
+			}
 		}
 	}
 }

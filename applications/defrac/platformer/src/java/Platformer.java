@@ -1,3 +1,4 @@
+import defrac.display.DisplayObject;
 import defrac.display.Stage;
 import defrac.display.Stats;
 import defrac.display.Texture;
@@ -25,6 +26,7 @@ import static java.lang.Math.rint;
  */
 public final class Platformer
 {
+	private static final MonitorFilter MonitorFilter = new MonitorFilter();
 	private static final double Drag = 0.1;
 	private static final double Force = 1.0;
 
@@ -59,7 +61,10 @@ public final class Platformer
 					platformerStage.addRenderer( new ObjectsRenderer( platformerStage, ( MapObjectGroupLayer ) mapLayer ) );
 			}
 
-			stage.addChild( platformerStage.displayObject() ).moveTo( 0f, 64f ).filter( new MonitorFilter() );
+			final DisplayObject stageObject = stage.addChild( platformerStage.displayObject() ).
+					moveTo( 0f, 64f ).
+					filter( MonitorFilter );
+
 			stage.addChild( TinyConsole.get() ).moveTo( platformerStage.pixelWidth() - TinyConsole.Width, 0f );
 			stage.addChild( new Stats() );
 
@@ -85,6 +90,16 @@ public final class Platformer
 			System.out.println( "all set... (use cursor keys to navigate)" );
 
 			final UIEventManager eventManager = stage.eventManager();
+
+			stage.globalEvents().onKeyUp.add( event -> {
+				if( event.keyCode == KeyCode.SPACE )
+				{
+					if( null == stageObject.filter() )
+						stageObject.filter( MonitorFilter );
+					else
+						stageObject.filter( null );
+				}
+			} );
 
 			stage.globalEvents().onEnterFrame.add( ( ignore ) -> {
 

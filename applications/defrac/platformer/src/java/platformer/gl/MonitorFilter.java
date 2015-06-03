@@ -40,7 +40,7 @@ public final class MonitorFilter implements Filter
 		//noinspection StringConcatenationInsideStringBufferAppend
 		builder.append( "" +
 						"float pi = 3.141592653589793;" +
-						"float bend = 0.12;" +
+						"float bend = 0.1;" +
 						"float alphaDecay = 0.2;" +
 						"float alphaOver = 1.8;" +
 						"vec2 ratio = vec2(" + ratioX + ", " + ratioY + ");" +
@@ -49,6 +49,7 @@ public final class MonitorFilter implements Filter
 						"vec2 center = uv-0.5;" +
 						"float distance = dot(center,center)*bend;" +
 						"uv += center*(1.0+distance)*distance;" +
+						"uv = max(vec2(0.0),uv);" +
 						// Scanlines
 						"vec2 xy = floor(uv/ratio * u_resolution.zw);" +
 						"vec3 rgb = getPixel(uv/ratio).rgb;" +

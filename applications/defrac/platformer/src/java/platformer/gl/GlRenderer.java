@@ -158,7 +158,7 @@ public final class GlRenderer
 	 * @param h       The height of the image
 	 */
 	public void draw(
-			final Texture texture,
+			@Nonnull final Texture texture,
 			final int x, final int y,
 			final int w, final int h )
 	{
@@ -179,7 +179,7 @@ public final class GlRenderer
 	 * @param flippedVertically   True is the image should be switched vertically
 	 */
 	public void draw(
-			final Texture texture,
+			@Nonnull final Texture texture,
 			final int x, final int y,
 			final int w, final int h,
 			final boolean flippedDiagonally,
