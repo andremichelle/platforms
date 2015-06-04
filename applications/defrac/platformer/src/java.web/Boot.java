@@ -34,33 +34,15 @@ public final class Boot
 		}
 
 		document.title = project.title;
-		body.style.margin = "0";
-		body.style.padding = "0";
-		body.style.width = "100%";
-		body.style.height = "100%";
-		body.style.display = "flex";
-		body.style.display = "-webkit-flex";
-		body.style.position = "absolute";
-		body.style.overflow = "hidden";
 		body.style.backgroundColor = "black";
-		body.style.setProperty( "-webkit-align-items", "center" );
-		body.style.setProperty( "align-items", "center" );
-		body.style.setProperty( "justify-content", "center" );
-		body.style.setProperty( "-webkit-justify-content", "center" );
-		final HTMLElement div = ( HTMLElement ) document.createElement( "div" );
-		div.style.width = project.width + "px";
-		div.style.height = project.height + "px";
-		body.appendChild( div );
 
 		FrameBuilder.
-				forScreen( new MainScreen( project.create ) ).
-				disableCSS().container( div ).
+				forScreen( new MainScreen( project ) ).
 				show();
 
 		final HTMLElement canvas = ( HTMLElement ) document.querySelector( "canvas" );
 		assert null != canvas;
 
-		canvas.style.outline = "none";
 		canvas.focus();
 	}
 }
