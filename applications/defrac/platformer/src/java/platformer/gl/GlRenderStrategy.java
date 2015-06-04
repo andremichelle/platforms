@@ -130,7 +130,7 @@ public interface GlRenderStrategy
 		private GLUniformLocation textureLocation;
 		private GLUniformLocation alphaLocation;
 
-		private boolean inited;
+		private boolean ready;
 
 		public Default( @Nonnull final String fCode, @Nonnull final String vCode )
 		{
@@ -166,7 +166,7 @@ public interface GlRenderStrategy
 
 			loadUniforms( gl );
 
-			inited = true;
+			ready = true;
 		}
 
 		protected void loadUniforms( final @Nonnull GL gl )
@@ -179,7 +179,7 @@ public interface GlRenderStrategy
 		@Override
 		public void initDraw( @Nonnull final GL gl, @Nonnull final GLMatrix glMatrix, final float alpha )
 		{
-			if( !inited )
+			if( !ready )
 				return;
 
 			gl.useProgram( program );

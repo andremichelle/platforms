@@ -62,7 +62,9 @@ public final class GripeGameTest
 				}
 			}
 
-			final DisplayObject stageObject = stage.addChild( platformer.displayObject() ).moveTo( 0f, 64f );
+			final DisplayObject stageObject = stage.addChild( platformer.displayObject() ).
+					moveTo( 0f, 64f ).
+					filter( MonitorFilter );
 
 			stage.addChild( TinyConsole.get() ).moveTo( platformer.pixelWidth() - TinyConsole.Width, 0f );
 			stage.addChild( platformer.displayObject() );
@@ -74,7 +76,7 @@ public final class GripeGameTest
 			System.out.println( "all set... (use cursor keys to navigate)" );
 
 			stage.globalEvents().onKeyUp.add( event -> {
-				if( event.keyCode == KeyCode.SPACE )
+				if( event.keyCode == KeyCode.ESCAPE )
 				{
 					if( null == stageObject.filter() )
 						stageObject.filter( MonitorFilter );
@@ -88,7 +90,7 @@ public final class GripeGameTest
 				GlRenderStrategy.Orifice.get().setCircle(
 						sprite.x() - platformer.offsetX() + sprite.width() / 2,
 						sprite.y() - platformer.offsetY(),
-						64f );
+						48f );
 			} );
 		} );
 	}

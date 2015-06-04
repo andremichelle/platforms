@@ -236,6 +236,12 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 		return surface;
 	}
 
+	@Nonnull
+	public MapData mapData()
+	{
+		return mapData;
+	}
+
 	@Override
 	public String toString()
 	{

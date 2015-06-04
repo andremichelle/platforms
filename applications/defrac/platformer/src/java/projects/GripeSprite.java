@@ -9,18 +9,27 @@ import defrac.util.KeyCode;
 import platformer.Platformer;
 import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
+import platformer.tmx.MapData;
+import platformer.tmx.MapTileLayer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
+ * Do not take this examples code seriously.
+ * I have been trying to make the collisions by a point test which has a lot of special cases.
+ * Better use a solid collision-detection with dynamic intersection on a rectangle.
+ * However at least it starts to live :)
  * @author Andre Michelle
  */
 public final class GripeSprite implements Sprite
 {
-	private static final double Drag = 0.5;
-	private static final double Force = 1.4;
 	private static final int Size = 32;
+	private static final double DragFall = 0.02;
+	private static final double DragMove = 0.3;
+	private static final double MoveForce = 0.8;
+	private static final double JumpForce = 7.0;
+	private static final double Gravity = 0.2;
 
 	private final Platformer platformer;
 	private final Stage stage;
@@ -28,12 +37,14 @@ public final class GripeSprite implements Sprite
 	@Nullable
 	private GripeSpriteAtlas sheet;
 
-	private double positionX = 96.0;
-	private double positionY = 432.0;
+	private double positionX = 64.0;
+	private double positionY = 362.0;
 	private double velocityX = 0.0;
 	private double velocityY = 0.0;
 
 	private boolean flip;
+	private boolean jumpEnabled = true;
+	private boolean jumping = true;
 	private int timeMove = 0;
 
 	public GripeSprite( @Nonnull final Platformer platformer, @Nonnull final Stage stage )
@@ -59,31 +70,29 @@ public final class GripeSprite implements Sprite
 			final UIEventManager eventManager = stage.eventManager();
 			final boolean l = eventManager.isKeyDown( KeyCode.LEFT );
 			final boolean r = eventManager.isKeyDown( KeyCode.RIGHT );
-			final boolean u = eventManager.isKeyDown( KeyCode.UP );
-			final boolean d = eventManager.isKeyDown( KeyCode.DOWN );
+			final boolean j = eventManager.isKeyDown( KeyCode.UP );
+
+			if( !jumping && jumpEnabled && j )
+			{
+				velocityY = -JumpForce;
+				jumping = true;
+				jumpEnabled = false;
+			}
+
+			if( !jumpEnabled && !j )
+				jumpEnabled = true;
 
 			final double forceX;
-			final double forceY;
 
 			if( l && !r )
-				forceX = -Force;
+				forceX = -MoveForce;
 			else if( r && !l )
-				forceX = Force;
+				forceX = MoveForce;
 			else
 				forceX = 0.0;
 
-			if( u && !d )
-				forceY = -Force;
-			else if( d && !u )
-				forceY = Force;
-			else
-				forceY = 0.0;
-
 			velocityX += forceX;
-			velocityY += forceY;
-
-			velocityX -= Drag * velocityX;
-			velocityY -= Drag * velocityY;
+			velocityY += Gravity;
 
 			if( Math.abs( velocityX ) < 0.1 )
 				velocityX = 0.0;
@@ -96,8 +105,108 @@ public final class GripeSprite implements Sprite
 			if( 0.0 != velocityX || 0.0 != velocityY )
 				timeMove = platformer.currentTime();
 
+			// Simple tile physics (I mean it.)
+			//
+			final MapData mapData = platformer.mapData();
+			final MapTileLayer collisions = ( MapTileLayer ) mapData.getLayerByName( "collision" );
+			assert null != collisions : "collision layer not found.";
+
+			final int leftOffset = Size / 2;
+
+			boolean floor = false;
+
+			if( 0.0 != velocityY )
+			{
+				final int snapX = ( int ) ( positionX + velocityX + leftOffset );
+				final int tileX = snapX / mapData.tileWidth;
+				final int tileY = ( int ) ( positionY + velocityY ) / mapData.tileHeight;
+
+				if( velocityY > 0.0 )
+				{
+					final int blockIndex = ( tileY + 1 ) * collisions.width + tileX;
+
+					if( 0 == snapX % mapData.tileWidth )
+					{
+						// Since we are trying to get it to work as a point object, we need a special treatment here.
+						//
+						if( 0 != collisions.data[ blockIndex ] && 0 != collisions.data[ blockIndex - 1 ] )
+						{
+							velocityY = 0.0;
+							positionY = tileY * mapData.tileHeight;
+							floor = true;
+							jumping = false;
+						}
+					}
+					else if( 0 != collisions.data[ blockIndex ] )
+					{
+						velocityY = 0.0;
+						positionY = tileY * mapData.tileHeight;
+						floor = true;
+						jumping = false;
+					}
+				}
+				else if( velocityY < 0.0 )
+				{
+					final int blockIndex = tileY * collisions.width + tileX;
+
+					if( 0 == snapX % mapData.tileWidth )
+					{
+						if( 0 != collisions.data[ blockIndex ] && 0 != collisions.data[ blockIndex - 1 ] )
+						{
+							velocityY = 0.0;
+							positionY = ( tileY + 1 ) * mapData.tileHeight;
+						}
+					}
+					else if( 0 != collisions.data[ blockIndex ] )
+					{
+						velocityY = 0.0;
+						positionY = ( tileY + 1 ) * mapData.tileHeight;
+					}
+				}
+			}
+
+			if( velocityX < 0.0 )
+			{
+				final int tileX = ( int ) ( ( positionX + velocityX + leftOffset ) / mapData.tileWidth );
+				final int tileY = ( int ) ( ( positionY + velocityY ) / mapData.tileHeight );
+
+				if( 0 != collisions.data[ tileY * collisions.width + tileX ] )
+				{
+					velocityX = 0.0;
+					positionX = tileX * mapData.tileWidth;
+				}
+				else if( positionX + velocityX < 0.0 )
+				{
+					velocityX = 0.0;
+					positionX = 0.0;
+				}
+			}
+			else if( velocityX > 0.0 )
+			{
+				final int tileX = ( int ) ( ( positionX + velocityX + leftOffset ) / mapData.tileWidth );
+				final int tileY = ( int ) ( ( positionY + velocityY ) / mapData.tileHeight );
+
+				if( 0 != collisions.data[ tileY * collisions.width + tileX ] )
+				{
+					velocityX = 0.0;
+					positionX = ( tileX - 1 ) * mapData.tileWidth;
+				}
+				else if( positionX + velocityX > ( mapData.width - 2 ) * mapData.tileWidth )
+				{
+					velocityX = 0.0;
+					positionX = ( mapData.width - 2 ) * mapData.tileWidth;
+				}
+			}
+
+			velocityX -= DragMove * velocityX;
+
+			if( !floor )
+			{
+				velocityY -= DragFall * velocityY;
+			}
+
 			positionX += velocityX;
-//			positionY += velocityY;
+			positionY += velocityY;
 		} );
 	}
 
@@ -135,14 +244,22 @@ public final class GripeSprite implements Sprite
 
 		final Texture texture;
 
-		if( run )
+		if( jumping )
+		{
+			texture = sheet.jump;
+		}
+		else if( 0.0 < velocityY )
+		{
+			texture = sheet.fall[ ( context.currentTime() / 80 ) % sheet.fall.length ];
+		}
+		else if( run )
 		{
 			texture = sheet.run[ ( context.currentTime() / 80 ) % sheet.run.length ];
 		}
 		else
 		{
 			// Some cuteness for idle
-			final int idleDuration = 10000;
+			final int idleDuration = 4000;
 			final int lookDuration = 2000;
 			final int blinkDuration = 400;
 			final int timeStanding = platformer.currentTime() - timeMove;
