@@ -102,9 +102,6 @@ public final class GripeSprite implements Sprite
 			if( Math.abs( velocityY ) < 0.1 )
 				velocityY = 0.0;
 
-			if( 0.0 != velocityX || 0.0 != velocityY )
-				timeMove = platformer.currentTime();
-
 			// Simple tile physics (I mean it.)
 			//
 			final MapData mapData = platformer.mapData();
@@ -204,6 +201,9 @@ public final class GripeSprite implements Sprite
 			{
 				velocityY -= DragFall * velocityY;
 			}
+
+			if( 0.0 != velocityX || 0.0 != velocityY )
+				timeMove = platformer.currentTime();
 
 			positionX += velocityX;
 			positionY += velocityY;
