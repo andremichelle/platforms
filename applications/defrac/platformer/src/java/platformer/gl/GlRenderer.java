@@ -389,6 +389,7 @@ public final class GlRenderer
 		glMatrix.identity();
 		glMatrix.ortho( 0f, width, height, 0f, 0f, 1f );
 
+		gl.viewport( 0, 0, ( int ) width, ( int ) height );
 		gl.clearColor( background[ 0 ], background[ 1 ], background[ 2 ], background[ 3 ] );
 		gl.clear( GL.COLOR_BUFFER_BIT );
 
@@ -399,10 +400,9 @@ public final class GlRenderer
 		gl.uniformMatrix4fv( matrixLocation, false, glMatrix.values );
 		gl.uniform1f( alphaLocation, 1F );
 		gl.enableVertexAttribArray( 0 );
-		gl.enableVertexAttribArray( 1 );
 		gl.vertexAttribPointer( 0, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 0 );
+		gl.enableVertexAttribArray( 1 );
 		gl.vertexAttribPointer( 1, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 2 * BufferSizeFloat );
-		gl.activeTexture( GL.TEXTURE0 );
 
 		textureData = null;
 		bufferPointer = 0;
@@ -421,6 +421,7 @@ public final class GlRenderer
 		if( 0 == bufferPointer )
 			return;
 
+		gl.activeTexture( GL.TEXTURE0 );
 		gl.bindTexture( GL.TEXTURE_2D, stage.getOrCreateTexture( textureData ) );
 		gl.uniform1i( textureLocation, 0 );
 
