@@ -47,7 +47,7 @@ public final class TileRenderer implements Renderer
 	}
 
 	/**
-	 * Accepts a sprite to rendered with respect to its depth.
+	 * Accepts a sprite to be rendered with respect to its depth.
 	 *
 	 * @param sprite The sprite to be rendered.
 	 */

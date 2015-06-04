@@ -66,7 +66,7 @@ public final class DepthSortingTest
 			platformer.restartTime();
 			stage.backgroundColor( 0xFF000000 );
 
-			System.out.println( "all set... (use cursor keys to navigate)" );
+			System.out.println( "all set... (just watch)" );
 
 			final Point[] path = new Point[]{
 					new Point( 2 * mapData.tileWidth, 7 * mapData.tileHeight - 16 ),
