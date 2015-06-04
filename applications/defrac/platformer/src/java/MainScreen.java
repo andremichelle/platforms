@@ -1,7 +1,4 @@
-import defrac.display.Stage;
-import defrac.lang.Procedure;
-import defrac.ui.DisplayList;
-import defrac.ui.Screen;
+import defrac.ui.*;
 
 import javax.annotation.Nonnull;
 
@@ -54,12 +51,53 @@ import javax.annotation.Nonnull;
  */
 public final class MainScreen extends Screen
 {
-	public MainScreen( @Nonnull final Procedure<Stage> onCreate )
+	@Nonnull
+	private final Project project;
+
+	private DisplayList displayList;
+
+	public MainScreen( @Nonnull final Project project )
 	{
-		final DisplayList displayList = new DisplayList();
+		this.project = project;
+	}
 
-		displayList.root().onSuccess( onCreate );
+	@Override
+	protected void onCreate()
+	{
+		super.onCreate();
 
-		rootView( displayList );
+		final LinearLayout layout =
+				LinearLayout.
+						horizontal().
+						gravity(Gravity.CENTER);
+
+		displayList = new DisplayList();
+
+		displayList.root().onSuccess( project.create );
+
+		displayList.layoutConstraints(
+				new LinearLayout.LayoutConstraints(
+						project.width,
+						project.height, PixelUnits.DP).
+						gravity(Gravity.CENTER));
+
+		layout.padding(PixelUnits.PX.convert(10, PixelUnits.DP));
+		layout.addView(displayList);
+
+		rootView( layout );
+	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		displayList.onPause();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		displayList.onResume();
 	}
 }

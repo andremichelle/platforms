@@ -12,15 +12,9 @@
   "web": {
     "js": "app.js",
     "port": 28511,
-    "width": 384,
-    "height": 320,
     "webp": {
       "enabled": "true"
     },
     "debug": "true"
-  },
-  "jvm": {
-    "width": 384,
-    "height": 320
   }
 }
