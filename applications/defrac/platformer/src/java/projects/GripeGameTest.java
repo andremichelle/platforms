@@ -5,6 +5,7 @@ import defrac.display.Stage;
 import defrac.display.Stats;
 import defrac.util.KeyCode;
 import platformer.Platformer;
+import platformer.gl.GlRenderStrategy;
 import platformer.gl.MonitorFilter;
 import platformer.renderer.SpriteLayer;
 import platformer.renderer.TileRenderer;
@@ -41,7 +42,19 @@ public final class GripeGameTest
 				final Class<? extends MapLayer> layerClass = mapLayer.getClass();
 
 				if( MapTileLayer.class.equals( layerClass ) )
-					platformer.addRenderer( new TileRenderer( platformer, ( MapTileLayer ) mapLayer ) );
+				{
+					final TileRenderer renderer;
+					if( "hidden".equals( mapLayer.name ) )
+					{
+						renderer = new TileRenderer( platformer, ( MapTileLayer ) mapLayer, GlRenderStrategy.Orifice.get() );
+					}
+					else
+					{
+						renderer = new TileRenderer( platformer, ( MapTileLayer ) mapLayer );
+					}
+
+					platformer.addRenderer( renderer );
+				}
 
 				if( "sprites".equals( mapLayer.name ) )
 				{
@@ -70,7 +83,13 @@ public final class GripeGameTest
 				}
 			} );
 
-			stage.globalEvents().onEnterFrame.add( ( ignore ) -> platformer.center( sprite ) );
+			stage.globalEvents().onEnterFrame.add( ( ignore ) -> {
+				platformer.center( sprite );
+				GlRenderStrategy.Orifice.get().setCircle(
+						sprite.x() - platformer.offsetX() + sprite.width() / 2,
+						sprite.y() - platformer.offsetY(),
+						64f );
+			} );
 		} );
 	}
 }

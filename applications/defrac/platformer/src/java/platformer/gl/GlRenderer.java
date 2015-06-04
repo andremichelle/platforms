@@ -6,21 +6,13 @@ import defrac.display.TextureData;
 import defrac.gl.GL;
 import defrac.gl.GLBuffer;
 import defrac.gl.GLMatrix;
-import defrac.gl.GLProgram;
-import defrac.gl.GLShader;
-import defrac.gl.GLUniformLocation;
 import defrac.util.Color;
 
 import javax.annotation.Nonnull;
 
-import static platformer.gl.GlUtils.createShader;
-import static platformer.gl.GlUtils.linkProgram;
-
 /**
  * A Renderer that draws images to the current GLSurface.
- * <p>
  * All draws will be written as geometry and only send to the GPU when the alpha value or texture changes.
- * <p>
  * TODO ReInit when GL context is broken (never happened while testing, but is assumed on certain platforms)
  *
  * @author Andre Michelle
@@ -32,35 +24,10 @@ public final class GlRenderer
 	private static final int BufferImageSize = BufferNumProperties * BufferNumVertices;
 	private static final int BufferSizeFloat = 4;
 
-	private static final String fCode =
-			"uniform sampler2D texture;" +
-					"uniform float alpha;" +
-					"varying vec2 vUv;" +
-					"void main()" +
-					"{" +
-					" vec4 pixel = texture2D( texture, vUv );" +
-					" gl_FragColor = vec4( pixel.rgb, pixel.a * alpha );" +
-					"}";
-
-	private static final String vCode =
-			"attribute vec3 position;" +
-					"attribute vec2 uv;" +
-					"uniform mat4 pMatrix;" +
-					"varying vec2 vUv;" +
-					"void main()" +
-					"{" +
-					"	vUv = uv;" +
-					"	gl_Position = pMatrix * vec4( position.xy, 0, 1 );" +
-					"}";
-
 	private final GLMatrix glMatrix;
 	private final float[] buffer;
 
 	// GLContext
-	private GLProgram program;
-	private GLUniformLocation matrixLocation;
-	private GLUniformLocation textureLocation;
-	private GLUniformLocation alphaLocation;
 	private GLBuffer glBuffer;
 	private Stage stage = null;
 	private GL gl = null;
@@ -82,6 +49,9 @@ public final class GlRenderer
 	private boolean drawPhase;
 	private boolean drawable;
 
+	@Nonnull
+	private GlRenderStrategy renderStrategy;
+
 	/**
 	 * @param capacity The number of textures that can be stored as geometry
 	 */
@@ -95,7 +65,20 @@ public final class GlRenderer
 
 		alpha = 1f;
 
+		renderStrategy = GlRenderStrategy.Default.get();
+
 		System.out.println( "glBuffer: " + ( ( bufferSize * BufferSizeFloat ) >> 10 ) + "kb" );
+	}
+
+	public void setRenderStrategy( @Nonnull final GlRenderStrategy strategy )
+	{
+		if( strategy != renderStrategy )
+		{
+			if( 0 < bufferPointer )
+				call();
+
+			renderStrategy = strategy;
+		}
 	}
 
 	/**
@@ -111,16 +94,17 @@ public final class GlRenderer
 	{
 		assert !drawPhase : "draw phase out of order";
 
-		drawPhase = true;
-
 		this.stage = stage;
 		this.gl = gl;
 
 		drawCalls = 0;
 		drawTriangles = 0;
+
 		Color.extract( backgroundColor, background );
 
 		beginGL( width, height );
+
+		drawPhase = true;
 	}
 
 	/**
@@ -140,9 +124,6 @@ public final class GlRenderer
 				call();
 
 			alpha = value;
-
-			assert null != gl;
-			gl.uniform1f( alphaLocation, value );
 		}
 
 		return this;
@@ -340,37 +321,8 @@ public final class GlRenderer
 			initGL = false;
 			drawable = false;
 
-			if( null != program )
-			{
-				gl.deleteProgram( program );
-				program = null;
-			}
-
-			final GLShader vertexShader = createShader( gl, vCode, GL.VERTEX_SHADER );
-			if( null == vertexShader )
-				return;
-
-			final GLShader fragmentShader = createShader( gl, fCode, GL.FRAGMENT_SHADER );
-			if( null == fragmentShader )
-				return;
-
-			program = gl.createProgram();
-
-			if( !linkProgram( gl, program, vertexShader, fragmentShader, "position", "uv" ) )
-			{
-				gl.deleteProgram( program );
-				program = null;
-				return;
-			}
-
-			matrixLocation = gl.getUniformLocation( program, "pMatrix" );
-			textureLocation = gl.getUniformLocation( program, "texture" );
-			alphaLocation = gl.getUniformLocation( program, "alpha" );
-		}
-
-		if( null == program )
-		{
-			return; // syntax error
+			GlRenderStrategy.Default.get().initProgram( gl );
+			GlRenderStrategy.Orifice.get().initProgram( gl );
 		}
 
 		if( null == glBuffer )
@@ -396,9 +348,6 @@ public final class GlRenderer
 		gl.enable( GL.BLEND );
 		gl.blendFunc( GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA );
 
-		gl.useProgram( program );
-		gl.uniformMatrix4fv( matrixLocation, false, glMatrix.values );
-		gl.uniform1f( alphaLocation, 1F );
 		gl.enableVertexAttribArray( 0 );
 		gl.vertexAttribPointer( 0, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 0 );
 		gl.enableVertexAttribArray( 1 );
@@ -421,9 +370,10 @@ public final class GlRenderer
 		if( 0 == bufferPointer )
 			return;
 
+		renderStrategy.initDraw( gl, glMatrix, alpha );
+
 		gl.activeTexture( GL.TEXTURE0 );
 		gl.bindTexture( GL.TEXTURE_2D, stage.getOrCreateTexture( textureData ) );
-		gl.uniform1i( textureLocation, 0 );
 
 		gl.bindBuffer( GL.ARRAY_BUFFER, glBuffer );
 		gl.bufferSubData( GL.ARRAY_BUFFER, 0, buffer, 0, bufferPointer );

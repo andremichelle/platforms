@@ -5923,10 +5923,12 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="36"/>
+   <tile gid="37"/>
+   <tile gid="36"/>
+   <tile gid="36"/>
+   <tile gid="5"/>
+   <tile gid="36"/>
    <tile gid="36"/>
    <tile gid="36"/>
    <tile gid="36"/>
@@ -5938,8 +5940,6 @@
    <tile gid="36"/>
    <tile gid="36"/>
    <tile gid="37"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>

@@ -3,6 +3,7 @@ package platformer.renderer;
 import defrac.display.Texture;
 import defrac.lang.Lists;
 import platformer.gl.GlRenderer;
+import platformer.gl.GlRenderStrategy;
 import platformer.tmx.MapTileLayer;
 import platformer.tmx.TileFlags;
 import platformer.tmx.TileSet;
@@ -21,14 +22,26 @@ import java.util.List;
 public final class TileRenderer implements Renderer
 {
 	private final RendererContext context;
-	private final MapTileLayer layer;
+	private final MapTileLayer tileLayer;
+	private final GlRenderStrategy renderStrategy;
 
 	private final List<Sprite> sprites;
 
-	public TileRenderer( @Nonnull final RendererContext context, @Nonnull final MapTileLayer layer )
+	public TileRenderer(
+				@Nonnull final RendererContext context,
+				@Nonnull final MapTileLayer tileLayer )
+	{
+		this( context, tileLayer, GlRenderStrategy.Default.get() );
+	}
+
+	public TileRenderer(
+			@Nonnull final RendererContext context,
+			@Nonnull final MapTileLayer tileLayer,
+			@Nonnull final GlRenderStrategy renderStrategy )
 	{
 		this.context = context;
-		this.layer = layer;
+		this.tileLayer = tileLayer;
+		this.renderStrategy = renderStrategy;
 
 		sprites = Lists.newLinkedList();
 	}
@@ -56,15 +69,17 @@ public final class TileRenderer implements Renderer
 	@Override
 	public void renderLayer()
 	{
-		if( !layer.visible )
+		if( !tileLayer.visible )
 		{
 			return;
 		}
 
-		final GlRenderer glRenderer = context.imageRenderer().alpha( layer.opacity );
+		final GlRenderer glRenderer = context.imageRenderer().alpha( tileLayer.opacity );
 
-		final int numRows = context.height() != layer.height ? context.height() + 1 : context.height();
-		final int numCols = context.width() != layer.width ? context.width() + 1 : context.width();
+		glRenderer.setRenderStrategy( renderStrategy );
+
+		final int numRows = context.height() != tileLayer.height ? context.height() + 1 : context.height();
+		final int numCols = context.width() != tileLayer.width ? context.width() + 1 : context.width();
 
 		final int tileWidth = context.tileWidth();
 		final int tileHeight = context.tileHeight();
@@ -82,7 +97,7 @@ public final class TileRenderer implements Renderer
 		final int offsetTileX = offsetX / tileWidth;
 		final int offsetTileY = offsetY / tileHeight;
 
-		final int[] data = layer.data;
+		final int[] data = tileLayer.data;
 
 		final int maxTileX = Math.min( offsetTileX + numCols, mapWidth );
 		final int maxTileY = Math.min( offsetTileY + numRows, mapHeight );
@@ -130,13 +145,15 @@ public final class TileRenderer implements Renderer
 				}
 			}
 		}
+
+		glRenderer.setRenderStrategy( GlRenderStrategy.Default.get() );
 	}
 
 	@Override
 	public String toString()
 	{
 		return "[TileRenderer" +
-				" layer: " + layer +
+				" tileLayer: " + tileLayer +
 				"]";
 	}
 
