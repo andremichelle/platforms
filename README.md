@@ -7,5 +7,5 @@ This app takes an existing tilemap and tries to extract the tiles that were used
 
 # TMX Renderer
 A defrac project to render the tmx format on all platforms.
-[Demo](http://cache.andre-michelle.com/applications/platformer/)
+[SuperMario](http://cache.andre-michelle.com/applications/platformer/#SuperMario),
 [DepthSorting](http://cache.andre-michelle.com/applications/platformer/#DepthSorting)
