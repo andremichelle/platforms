@@ -1,6 +1,7 @@
 package platformer.tmx;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**
@@ -42,6 +43,18 @@ public final class MapData
 		this.tileHeight = tileHeight;
 		this.nextObjectId = nextObjectId;
 		this.backgroundColor = backgroundColor;
+	}
+
+	@Nullable
+	public MapLayer getLayerByName( @Nonnull final String name )
+	{
+		for( final MapLayer mapLayer : mapLayers )
+		{
+			if( name.equals( mapLayer.name ) )
+				return mapLayer;
+		}
+
+		return null;
 	}
 
 	@Override

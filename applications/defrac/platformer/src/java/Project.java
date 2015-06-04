@@ -1,6 +1,7 @@
 import defrac.display.Stage;
 import defrac.lang.Procedure;
 import projects.DepthSortingTest;
+import projects.GripeGameTest;
 import projects.SuperMarioTest;
 
 import javax.annotation.Nonnull;
@@ -12,6 +13,7 @@ public final class Project
 {
 	public static final Project SuperMario = new Project( SuperMarioTest::new, "SuperMarioTest", 384, 320 );
 	public static final Project DepthSorting = new Project( DepthSortingTest::new, "DepthSortingTest", 320, 384 );
+	public static final Project GripeGame = new Project( GripeGameTest::new, "GripeGameTest", 384, 400 );
 
 	public final Procedure<Stage> create;
 	public final String title;

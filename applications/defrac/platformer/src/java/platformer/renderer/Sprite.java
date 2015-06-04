@@ -1,8 +1,6 @@
 package platformer.renderer;
 
-import defrac.display.Texture;
-
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * @author Andre Michelle
@@ -17,6 +15,5 @@ public interface Sprite
 
 	int height();
 
-	@Nullable
-	Texture texture();
+	void requestRender( @Nonnull final RendererContext context );
 }

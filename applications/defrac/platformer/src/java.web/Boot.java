@@ -28,6 +28,10 @@ public final class Boot
 		{
 			project = Project.DepthSorting;
 		}
+		else if( hash.contains( "GripeGame" ) )
+		{
+			project = Project.GripeGame;
+		}
 		else
 		{
 			project = Project.SuperMario;

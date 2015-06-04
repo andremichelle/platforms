@@ -3,7 +3,6 @@ package platformer.renderer;
 import defrac.display.Texture;
 import defrac.lang.Lists;
 import platformer.gl.GlRenderer;
-import platformer.tmx.MapLayer;
 import platformer.tmx.MapTileLayer;
 import platformer.tmx.TileFlags;
 import platformer.tmx.TileSet;
@@ -133,17 +132,10 @@ public final class TileRenderer implements Renderer
 		}
 	}
 
-	@Nonnull
-	@Override
-	public MapLayer layer()
-	{
-		return layer;
-	}
-
 	@Override
 	public String toString()
 	{
-		return "[TileLayerRenderer" +
+		return "[TileRenderer" +
 				" layer: " + layer +
 				"]";
 	}
@@ -157,20 +149,7 @@ public final class TileRenderer implements Renderer
 		} );
 
 		for( final Sprite sprite : sprites )
-		{
 			if( rowIndex == sprite.y() / context.tileHeight() + 1 )
-			{
-				final Texture texture = sprite.texture();
-
-				if( null != texture )
-				{
-					context.imageRenderer().draw(
-							texture,
-							sprite.x() - context.offsetX(),
-							sprite.y() - context.offsetY() - sprite.height() + context.tileHeight(),
-							sprite.width(), sprite.height() );
-				}
-			}
-		}
+				sprite.requestRender( context );
 	}
 }

@@ -6,8 +6,9 @@ import defrac.display.Texture;
 import defrac.display.TextureData;
 import defrac.geom.Point;
 import defrac.resource.TextureDataResource;
-import platformer.PlatformerStage;
+import platformer.Platformer;
 import platformer.renderer.ObjectsRenderer;
+import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
 import platformer.renderer.TileRenderer;
 import platformer.tmx.MapLayer;
@@ -17,7 +18,6 @@ import platformer.tmx.MapTileLayer;
 import platformer.utils.TinyConsole;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author Andre Michelle
@@ -34,29 +34,36 @@ public final class DepthSortingTest
 		MapResources.load( levelFile ).onSuccess( mapData -> {
 			System.out.println( "loaded " + mapData );
 
-			final PlatformerStage platformerStage = new PlatformerStage( mapData, 10, 10 );
+			final Platformer platformer = new Platformer( mapData, 10, 10 );
+
+			final CharacterSprite sprite = new CharacterSprite();
 
 			for( final MapLayer mapLayer : mapData.mapLayers )
 			{
 				final Class<? extends MapLayer> layerClass = mapLayer.getClass();
 
 				if( MapTileLayer.class.equals( layerClass ) )
-					platformerStage.addRenderer( new TileRenderer( platformerStage, ( MapTileLayer ) mapLayer ) );
+				{
+					final TileRenderer renderer = new TileRenderer( platformer, ( MapTileLayer ) mapLayer );
+
+					platformer.addRenderer( renderer );
+
+					if( mapLayer.name.equals( "solids" ) )
+					{
+						renderer.addSprite( sprite );
+					}
+				}
 				else if( MapObjectGroupLayer.class.equals( layerClass ) )
-					platformerStage.addRenderer( new ObjectsRenderer( platformerStage, ( MapObjectGroupLayer ) mapLayer ) );
+				{
+					platformer.addRenderer( new ObjectsRenderer( platformer, ( MapObjectGroupLayer ) mapLayer ) );
+				}
 			}
 
-			stage.addChild( TinyConsole.get() ).moveTo( platformerStage.pixelWidth() - TinyConsole.Width, 0f );
-			stage.addChild( platformerStage.displayObject() ).moveTo( 0f, 64f );
+			stage.addChild( TinyConsole.get() ).moveTo( platformer.pixelWidth() - TinyConsole.Width, 0f );
+			stage.addChild( platformer.displayObject() ).moveTo( 0f, 64f );
 			stage.addChild( new Stats() );
 
-			final TileRenderer renderer = ( TileRenderer ) platformerStage.getLayerByName( "solids" ); // depth-sorting.json
-			assert null != renderer : "Map does not contain TileLayer solids.";
-			final CharacterSprite sprite = new CharacterSprite( platformerStage );
-
-			renderer.addSprite( sprite );
-
-			platformerStage.restartTime();
+			platformer.restartTime();
 			stage.backgroundColor( 0xFF000000 );
 
 			System.out.println( "all set... (use cursor keys to navigate)" );
@@ -87,7 +94,6 @@ public final class DepthSortingTest
 	{
 		private static final int Size = 32;
 
-		private final PlatformerStage stage;
 		private final Texture[][] sheet;
 
 		private int x;
@@ -96,10 +102,8 @@ public final class DepthSortingTest
 		private int directionIndex;
 		private boolean moving;
 
-		public CharacterSprite( @Nonnull final PlatformerStage stage )
+		public CharacterSprite()
 		{
-			this.stage = stage;
-
 			sheet = new Texture[ 4 ][ 3 ];
 
 			TextureDataResource.from( "character.png" ).listener( new TextureDataResource.SimpleListener()
@@ -169,11 +173,19 @@ public final class DepthSortingTest
 			return Size;
 		}
 
-		@Nullable
 		@Override
-		public Texture texture()
+		public void requestRender( @Nonnull final RendererContext context )
 		{
-			return sheet[ directionIndex ][ moving ? ( stage.currentTime() / 150 ) % 3 : 1 ];
+			final Texture texture = sheet[ directionIndex ][ moving ? ( context.currentTime() / 150 ) % 3 : 1 ];
+
+			if( null == texture )
+				return;
+
+			context.imageRenderer().draw(
+					texture,
+					x - context.offsetX(),
+					y - context.offsetY() - Size + context.tileHeight(),
+					Size, Size );
 		}
 	}
 }

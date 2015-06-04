@@ -11,6 +11,7 @@ import defrac.lang.Lists;
 import platformer.gl.GlRenderer;
 import platformer.renderer.Renderer;
 import platformer.renderer.RendererContext;
+import platformer.renderer.Sprite;
 import platformer.tmx.MapData;
 import platformer.tmx.TileSet;
 import platformer.utils.TinyConsole;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * @author Andre Michelle
  */
-public final class PlatformerStage implements GLSurface.Renderer, RendererContext
+public final class Platformer implements GLSurface.Renderer, RendererContext
 {
 	private final MapData mapData;
 	private final int width;
@@ -43,7 +44,7 @@ public final class PlatformerStage implements GLSurface.Renderer, RendererContex
 	private int offsetX = 0;
 	private int offsetY = 0;
 
-	public PlatformerStage( @Nonnull final MapData mapData, final int width, final int height )
+	public Platformer( @Nonnull final MapData mapData, final int width, final int height )
 	{
 		this.mapData = mapData;
 		this.width = width;
@@ -213,6 +214,11 @@ public final class PlatformerStage implements GLSurface.Renderer, RendererContex
 		return true;
 	}
 
+	public void center( final Sprite sprite )
+	{
+		moveTo( sprite.x() + ( sprite.width() - pixelWidth ) / 2, sprite.y() - pixelHeight / 2 );
+	}
+
 	/**
 	 * Restarts the local time for animations
 	 */
@@ -239,17 +245,5 @@ public final class PlatformerStage implements GLSurface.Renderer, RendererContex
 				", pixelWidth: " + pixelWidth +
 				", pixelHeight: " + pixelHeight +
 				"]";
-	}
-
-	@Nullable
-	public Renderer getLayerByName( @Nonnull final String name )
-	{
-		for( Renderer renderer : renderPipe )
-		{
-			if( renderer.layer().name.equals( name ) )
-				return renderer;
-		}
-
-		return null;
 	}
 }

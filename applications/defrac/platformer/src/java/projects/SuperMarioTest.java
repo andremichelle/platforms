@@ -5,7 +5,7 @@ import defrac.display.Stage;
 import defrac.display.Stats;
 import defrac.display.event.UIEventManager;
 import defrac.util.KeyCode;
-import platformer.PlatformerStage;
+import platformer.Platformer;
 import platformer.gl.MonitorFilter;
 import platformer.renderer.ObjectsRenderer;
 import platformer.renderer.TileRenderer;
@@ -39,30 +39,30 @@ public final class SuperMarioTest
 		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
 		System.out.println( "loading " + levelFile );
 
-		MapResources.load( levelFile ).onSuccess( map -> {
-			System.out.println( "loaded " + map );
+		MapResources.load( levelFile ).onSuccess( mapData -> {
+			System.out.println( "loaded " + mapData );
 
-			final PlatformerStage platformerStage = new PlatformerStage( map, 24, 14 );
+			final Platformer platformer = new Platformer( mapData, 24, 14 );
 
-			for( final MapLayer mapLayer : map.mapLayers )
+			for( final MapLayer mapLayer : mapData.mapLayers )
 			{
 				final Class<? extends MapLayer> layerClass = mapLayer.getClass();
 
 				if( MapTileLayer.class.equals( layerClass ) )
-					platformerStage.addRenderer( new TileRenderer( platformerStage, ( MapTileLayer ) mapLayer ) );
+					platformer.addRenderer( new TileRenderer( platformer, ( MapTileLayer ) mapLayer ) );
 				else if( MapObjectGroupLayer.class.equals( layerClass ) )
-					platformerStage.addRenderer( new ObjectsRenderer( platformerStage, ( MapObjectGroupLayer ) mapLayer ) );
+					platformer.addRenderer( new ObjectsRenderer( platformer, ( MapObjectGroupLayer ) mapLayer ) );
 			}
 
-			final DisplayObject stageObject = stage.addChild( platformerStage.displayObject() ).
+			final DisplayObject stageObject = stage.addChild( platformer.displayObject() ).
 					moveTo( 0f, 64f ).
 					filter( MonitorFilter );
 
-			stage.addChild( TinyConsole.get() ).moveTo( platformerStage.pixelWidth() - TinyConsole.Width, 0f );
-			stage.addChild( platformerStage.displayObject() );
+			stage.addChild( TinyConsole.get() ).moveTo( platformer.pixelWidth() - TinyConsole.Width, 0f );
+			stage.addChild( platformer.displayObject() );
 			stage.addChild( new Stats() );
 
-			platformerStage.restartTime();
+			platformer.restartTime();
 			stage.backgroundColor( 0xFF000000 );
 
 			System.out.println( "all set... (use cursor keys to navigate)" );
@@ -112,12 +112,12 @@ public final class SuperMarioTest
 				positionX += velocityX;
 				positionY += velocityY;
 
-				final boolean moved = platformerStage.moveTo( ( int ) rint( positionX ), ( int ) rint( positionY ) );
+				final boolean moved = platformer.moveTo( ( int ) rint( positionX ), ( int ) rint( positionY ) );
 
 				if( !moved )
 				{
-					positionX = platformerStage.offsetX();
-					positionY = platformerStage.offsetY();
+					positionX = platformer.offsetX();
+					positionY = platformer.offsetY();
 				}
 			} );
 		} );

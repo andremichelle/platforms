@@ -10,7 +10,8 @@ public final class Boot
 {
 	public static void main( String[] args )
 	{
-		final Project project = Project.SuperMario;
+//		final Project project = Project.SuperMario;
+		final Project project = Project.GripeGame;
 //		final Project project = Project.DepthSorting;
 
 		Dispatchers.FOREGROUND.exec( () -> {
@@ -23,7 +24,7 @@ public final class Boot
 							title( project.title ).
 							show();
 
-			frame.setBackground(Color.BLACK);
-		});
+			frame.setBackground( Color.BLACK );
+		} );
 	}
 }
