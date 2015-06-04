@@ -10,8 +10,8 @@ public final class Boot
 {
 	public static void main( String[] args )
 	{
-		//final Project project = Project.SuperMario;
-		final Project project = Project.DepthSorting;
+		final Project project = Project.SuperMario;
+//		final Project project = Project.DepthSorting;
 
 		Dispatchers.FOREGROUND.exec( () -> {
 			final Frame frame =

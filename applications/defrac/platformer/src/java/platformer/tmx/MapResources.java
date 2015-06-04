@@ -20,7 +20,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 import static defrac.lang.Preconditions.checkNotNull;
 
@@ -307,7 +306,9 @@ public final class MapResources
 				assert null != meta;
 
 				if( meta.contains( "animation" ) )
+				{
 					animations.put( Integer.parseInt( tileId, 10 ), decodeAnimation( checkNotNull( meta.getArray( "animation" ) ) ) );
+				}
 			}
 		}
 
@@ -333,11 +334,9 @@ public final class MapResources
 	@SuppressWarnings( "SpellCheckingInspection" )
 	private static TileAnimation decodeAnimation( @Nonnull final JSONArray jsonArray )
 	{
-		boolean oneCycle = false;
-
 		int relativeTime = 0;
 
-		final TreeMap<Integer, Integer> frames = new TreeMap<>();
+		final TileAnimation.Builder builder = new TileAnimation.Builder( jsonArray.length() );
 
 		for( final JSON json : jsonArray )
 		{
@@ -347,18 +346,19 @@ public final class MapResources
 			final int duration = jsonObject.getInt( "duration" );
 			final int tileId = jsonObject.getInt( "tileid" );
 
-			frames.put( relativeTime, tileId );
-
 			if( 0 == duration )
 			{
-				oneCycle = true;
-				break;
-			}
+				builder.add( Integer.MAX_VALUE, tileId );
 
-			relativeTime += duration;
+				return builder.build();
+			}
+			else
+			{
+				builder.add( relativeTime += duration, tileId );
+			}
 		}
 
-		return new TileAnimation( frames, relativeTime, oneCycle );
+		return builder.build();
 	}
 
 	@Nonnull
