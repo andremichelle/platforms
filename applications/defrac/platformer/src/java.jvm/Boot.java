@@ -8,13 +8,15 @@ public final class Boot
 {
 	public static void main( String[] args )
 	{
+//		final Project project = Project.SuperMario;
+		final Project project = Project.DepthSorting;
+
 		Dispatchers.FOREGROUND.exec( () ->
 				FrameBuilder.
-						forScreen( new MainScreen() ).
-						title( "Test" ).
-						width( 384 ).
-						height( 320 ).
-						title( "Platformer" ).
+						forScreen( new MainScreen( project.create ) ).
+						width( project.width ).
+						height( project.height ).
+						title( project.title ).
 						show() );
 	}
 }

@@ -9,8 +9,6 @@ import javax.annotation.Nullable;
  */
 public interface Sprite
 {
-	void moveTo( final int x, final int y );
-
 	int x();
 
 	int y();

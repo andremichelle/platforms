@@ -1,5 +1,9 @@
+import defrac.display.Stage;
+import defrac.lang.Procedure;
 import defrac.ui.DisplayList;
 import defrac.ui.Screen;
+
+import javax.annotation.Nonnull;
 
 /**
  * 'Platformer' is a defrac project to render tmx maps built with Tiled.
@@ -50,11 +54,11 @@ import defrac.ui.Screen;
  */
 public final class MainScreen extends Screen
 {
-	public MainScreen()
+	public MainScreen( @Nonnull final Procedure<Stage> onCreate )
 	{
 		final DisplayList displayList = new DisplayList();
 
-		displayList.root().onSuccess( Platformer::new );
+		displayList.root().onSuccess( onCreate );
 
 		rootView( displayList );
 	}
