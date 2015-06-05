@@ -152,12 +152,12 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 								   final int viewportWidth, final int viewportHeight,
 								   final boolean transparent )
 	{
-		time = ( int ) ( System.currentTimeMillis() - startTime );
-
 		final Stage stage = surface.stage();
 
 		if( null == stage )
 			return;
+
+		time = ( int ) ( System.currentTimeMillis() - startTime );
 
 		glRenderer.begin( stage, gl, width, height, mapData.backgroundColor );
 

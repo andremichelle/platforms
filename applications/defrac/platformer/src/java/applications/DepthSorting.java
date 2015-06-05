@@ -28,7 +28,7 @@ public final class DepthSorting
 
 	public DepthSorting( @Nonnull final Stage stage )
 	{
-		final String levelFile = "depth-sorting.json"; // checks unreasonable objects drawing
+		final String levelFile = "depth-sorting.json";
 		System.out.println( "loading " + levelFile );
 
 		MapResources.load( levelFile ).onSuccess( mapData -> {
@@ -142,11 +142,6 @@ public final class DepthSorting
 
 			this.x = x;
 			this.y = y;
-		}
-
-		public void stop()
-		{
-			moving = false;
 		}
 
 		@Override

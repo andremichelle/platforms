@@ -2,7 +2,6 @@ package applications;
 
 import defrac.display.DisplayObject;
 import defrac.display.Stage;
-import defrac.display.Stats;
 import defrac.display.event.UIEventManager;
 import defrac.util.KeyCode;
 import platformer.Platformer;
@@ -13,7 +12,6 @@ import platformer.tmx.MapLayer;
 import platformer.tmx.MapObjectGroupLayer;
 import platformer.tmx.MapResources;
 import platformer.tmx.MapTileLayer;
-import platformer.utils.TinyConsole;
 
 import javax.annotation.Nonnull;
 
@@ -54,16 +52,9 @@ public final class SuperMario
 					platformer.addRenderer( new ObjectsRenderer( platformer, ( MapObjectGroupLayer ) mapLayer ) );
 			}
 
-			final DisplayObject stageObject = stage.addChild( platformer.displayObject() ).
-					moveTo( 0f, 64f ).
-					filter( MonitorFilter );
-
-			stage.addChild( TinyConsole.get() ).moveTo( platformer.pixelWidth() - TinyConsole.Width, 0f );
-			stage.addChild( platformer.displayObject() );
-			stage.addChild( new Stats() );
+			final DisplayObject stageObject = stage.addChild( platformer.displayObject() ).filter( MonitorFilter );
 
 			platformer.restartTime();
-			stage.backgroundColor( 0xFF000000 );
 
 			System.out.println( "all set... (use cursor keys to navigate)" );
 

@@ -120,6 +120,6 @@ public final class ObjectsRenderer implements Renderer
 		graphics.beginPath();
 		graphics.globalAlpha( 1f );
 		graphics.lineWidth( 1f );
-		graphics.strokeStyle( 1f, 0.6f, 0f, 1f );
+		graphics.strokeStyle( 0f, 0.6f, 0f, 1f );
 	}
 }

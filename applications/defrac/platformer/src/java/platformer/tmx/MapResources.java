@@ -25,7 +25,6 @@ import static defrac.lang.Preconditions.checkNotNull;
 
 /**
  * Loads and parses the tmx format in json.
- * <p>
  * All resources as images will be loaded as well.
  *
  * @author Andre Michelle
@@ -46,26 +45,33 @@ public final class MapResources
 
 					final ResourceGroup<TextureData> resourceGroup = collectResourceGroup( jsonTilesets );
 
-					resourceGroup.listener( new ResourceGroup.SimpleListener<TextureData>()
+					if( 0 == resourceGroup.size() )
 					{
-						@Override
-						public void onResourceGroupComplete(
-								@Nonnull final ResourceGroup<TextureData> resourceGroup,
-								@Nonnull final List<TextureData> textures )
+						promise.success( decode( jsonLevel, Lists.newArrayList( 0 ) ) );
+					}
+					else
+					{
+						resourceGroup.listener( new ResourceGroup.SimpleListener<TextureData>()
 						{
-							promise.success( decode( jsonLevel, textures ) );
-						}
+							@Override
+							public void onResourceGroupComplete(
+									@Nonnull final ResourceGroup<TextureData> resourceGroup,
+									@Nonnull final List<TextureData> textures )
+							{
+								promise.success( decode( jsonLevel, textures ) );
+							}
 
-						@Override
-						public void onResourceGroupError(
-								@Nonnull final ResourceGroup<TextureData> resourceGroup,
-								@Nonnull final Throwable reason )
-						{
-							promise.failure( reason );
-						}
-					} );
+							@Override
+							public void onResourceGroupError(
+									@Nonnull final ResourceGroup<TextureData> resourceGroup,
+									@Nonnull final Throwable reason )
+							{
+								promise.failure( reason );
+							}
+						} );
 
-					resourceGroup.load();
+						resourceGroup.load();
+					}
 				} );
 
 		return promise.future();

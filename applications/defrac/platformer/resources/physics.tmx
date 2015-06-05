@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="32" tilewidth="32" tileheight="32" nextobjectid="5">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="16" tilewidth="32" tileheight="32" backgroundcolor="#fffff2" nextobjectid="7">
  <objectgroup name="collision">
-  <object id="1" x="0" y="1024">
-   <polyline points="0,0 2048,0"/>
-  </object>
-  <object id="4" name="GateTest" type="gate" x="256" y="832">
+  <object id="4" name="GateTest" type="gate" x="128" y="288">
    <polyline points="0,0 224,0 320,-96 416,-96 512,0 608,0 608,96 640,96 640,0 736,0 736,-96"/>
+  </object>
+  <object id="6" x="0" y="480">
+   <polyline points="0,0 1024,0"/>
   </object>
  </objectgroup>
 </map>

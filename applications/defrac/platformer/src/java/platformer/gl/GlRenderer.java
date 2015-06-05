@@ -155,9 +155,9 @@ public final class GlRenderer
 	 * @param y                   The y-coordinate where to draw
 	 * @param w                   The width of the image
 	 * @param h                   The height of the image
-	 * @param flippedDiagonally   True is the image should be switched diagonally
-	 * @param flippedHorizontally True is the image should be switched horizontally
-	 * @param flippedVertically   True is the image should be switched vertically
+	 * @param flippedDiagonally   True will switch the image diagonally
+	 * @param flippedHorizontally True will switch the image horizontally
+	 * @param flippedVertically   True will switch the image vertically
 	 */
 	public void draw(
 			@Nonnull final Texture texture,

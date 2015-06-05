@@ -38,7 +38,7 @@ public interface Launch
 		@Override
 		public int height()
 		{
-			return 320;
+			return 224;
 		}
 
 		@Override
@@ -96,7 +96,7 @@ public interface Launch
 		@Override
 		public String title()
 		{
-			return "GripeGame";
+			return "Gripe";
 		}
 
 		@Override
@@ -122,6 +122,41 @@ public interface Launch
 		public Screen createScreen()
 		{
 			return new CenteredDisplayListScreen( applications.Gripe::new, width(), height() );
+		}
+	};
+
+	Launch Physics = new Launch()
+	{
+		@Nonnull
+		@Override
+		public String title()
+		{
+			return "Physics";
+		}
+
+		@Override
+		public int width()
+		{
+			return 1024;
+		}
+
+		@Override
+		public int height()
+		{
+			return 512 + 64;
+		}
+
+		@Override
+		public int backgroundColor()
+		{
+			return 0xFFFFFFFF;
+		}
+
+		@Nonnull
+		@Override
+		public Screen createScreen()
+		{
+			return new CenteredDisplayListScreen( applications.Physics::new, width(), height() );
 		}
 	};
 }

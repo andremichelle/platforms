@@ -42,7 +42,7 @@ public final class Boot
 
 		final int[] rgba = new int[ 4 ];
 		Color.extract( app.backgroundColor(), rgba );
-		body.style.backgroundColor = "rgba(" + rgba[ 0 ] + ", " + rgba[ 1 ] + ", " + rgba[ 2 ] + ", " + ( rgba[ 3 ] / 255.0 ) + ")";
+		body.style.backgroundColor = "rgba(" + rgba[ 0 ] + ", " + rgba[ 1 ] + ", " + rgba[ 2 ] + ", 1 )";
 
 		FrameBuilder.
 				forScreen( app.createScreen() ).
