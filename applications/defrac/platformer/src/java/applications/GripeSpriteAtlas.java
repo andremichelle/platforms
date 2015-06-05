@@ -1,4 +1,4 @@
-package projects;
+package applications;
 
 import defrac.display.Texture;
 import defrac.display.TextureData;

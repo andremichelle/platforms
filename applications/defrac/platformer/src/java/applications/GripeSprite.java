@@ -1,4 +1,4 @@
-package projects;
+package applications;
 
 import defrac.display.Stage;
 import defrac.display.Texture;

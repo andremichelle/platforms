@@ -1,4 +1,4 @@
-package projects;
+package applications;
 
 import defrac.display.Stage;
 import defrac.display.Stats;
@@ -22,11 +22,11 @@ import javax.annotation.Nonnull;
 /**
  * @author Andre Michelle
  */
-public final class DepthSortingTest
+public final class DepthSorting
 {
 	private float pathPhase = 0.0f;
 
-	public DepthSortingTest( @Nonnull final Stage stage )
+	public DepthSorting( @Nonnull final Stage stage )
 	{
 		final String levelFile = "depth-sorting.json"; // checks unreasonable objects drawing
 		System.out.println( "loading " + levelFile );

@@ -1,4 +1,4 @@
-package projects;
+package applications;
 
 import defrac.display.DisplayObject;
 import defrac.display.Stage;
@@ -22,7 +22,7 @@ import static java.lang.Math.rint;
 /**
  * @author Andre Michelle
  */
-public final class SuperMarioTest
+public final class SuperMario
 {
 	private static final MonitorFilter MonitorFilter = new MonitorFilter();
 	private static final double Drag = 0.1;
@@ -34,7 +34,7 @@ public final class SuperMarioTest
 	private double velocityX = 0.0;
 	private double velocityY = 0.0;
 
-	public SuperMarioTest( @Nonnull final Stage stage )
+	public SuperMario( @Nonnull final Stage stage )
 	{
 		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
 		System.out.println( "loading " + levelFile );

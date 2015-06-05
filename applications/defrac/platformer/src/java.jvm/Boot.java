@@ -1,6 +1,5 @@
 import defrac.concurrent.Dispatchers;
 import defrac.ui.FrameBuilder;
-import defrac.util.Color;
 
 /**
  * @author Andre Michelle
@@ -9,18 +8,17 @@ public final class Boot
 {
 	public static void main( String[] args )
 	{
-//		final Project project = Project.SuperMario;
-		final Project project = Project.GripeGame;
-//		final Project project = Project.DepthSorting;
+//		final Launch launch = Launch.SuperMario;
+		final Launch launch = Launch.GripeGame;
+//		final Launch launch = Launch.DepthSorting;
 
-		Dispatchers.FOREGROUND.exec( () ->
-				FrameBuilder.
-						forScreen( new MainScreen( project ) ).
-						resizable().
-						width( project.width ).
-						height( project.height ).
-						title( project.title ).
-						backgroundColor( Color.Web.BLACK ).
-						show());
+		Dispatchers.FOREGROUND.exec( () -> FrameBuilder.
+				forScreen( launch.createScreen() ).
+				resizable().
+				width( launch.width() ).
+				height( launch.height() ).
+				title( launch.title() ).
+				backgroundColor( 0xFF000000 | launch.backgroundColor() ).
+				show() );
 	}
 }

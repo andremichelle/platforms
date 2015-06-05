@@ -1,11 +1,3 @@
-import defrac.ui.DisplayList;
-import defrac.ui.Gravity;
-import defrac.ui.LinearLayout;
-import defrac.ui.PixelUnits;
-import defrac.ui.Screen;
-
-import javax.annotation.Nonnull;
-
 /**
  * 'Platformer' is a defrac project to render tmx maps built with Tiled.
  *
@@ -25,7 +17,7 @@ import javax.annotation.Nonnull;
  * Make sure you have java 1.8 installed.
  * TODO-LIST
  * [X] Load and parse tmx-format
- * [X] Render tiles on screen
+ * [X] Render tiles on createScreen
  * [X] Render layers with opacity
  * [X] Render animations
  * [X] Support tile-flipping (horizontally, vertically, diagonally)
@@ -47,56 +39,3 @@ import javax.annotation.Nonnull;
  * [ ] Convert tmx format to a more common and accessible structure to allow different map formats
  * [ ] Implement Physics
  */
-public final class MainScreen extends Screen
-{
-	@Nonnull
-	private final Project project;
-
-	private DisplayList displayList;
-
-	public MainScreen( @Nonnull final Project project )
-	{
-		this.project = project;
-	}
-
-	@Override
-	protected void onCreate()
-	{
-		super.onCreate();
-
-		final LinearLayout layout =
-				LinearLayout.
-						horizontal().
-						gravity( Gravity.CENTER );
-
-		displayList = new DisplayList();
-
-		displayList.root().onSuccess( project.create );
-
-		displayList.layoutConstraints(
-				new LinearLayout.LayoutConstraints(
-						project.width,
-						project.height, PixelUnits.DP ).
-						gravity( Gravity.CENTER ) );
-
-		layout.addView( displayList );
-
-		rootView( layout );
-	}
-
-	@Override
-	protected void onPause()
-	{
-		super.onPause();
-
-		displayList.onPause();
-	}
-
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-
-		displayList.onResume();
-	}
-}

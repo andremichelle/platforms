@@ -1,5 +1,6 @@
 import defrac.lang.Bridge;
 import defrac.ui.FrameBuilder;
+import defrac.util.Color;
 import defrac.web.HTMLDocument;
 import defrac.web.HTMLElement;
 import defrac.web.Location;
@@ -22,26 +23,29 @@ public final class Boot
 
 		final String hash = ( String ) Bridge.getUnsafeObject( location, "hash" );
 
-		final Project project;
+		final Launch app;
 
 		if( hash.contains( "DepthSorting" ) )
 		{
-			project = Project.DepthSorting;
+			app = Launch.DepthSorting;
 		}
 		else if( hash.contains( "GripeGame" ) )
 		{
-			project = Project.GripeGame;
+			app = Launch.GripeGame;
 		}
 		else
 		{
-			project = Project.SuperMario;
+			app = Launch.SuperMario;
 		}
 
-		document.title = project.title;
-		body.style.backgroundColor = "black";
+		document.title = app.title();
+
+		final int[] rgba = new int[ 4 ];
+		Color.extract( app.backgroundColor(), rgba );
+		body.style.backgroundColor = "rgba(" + rgba[ 0 ] + ", " + rgba[ 1 ] + ", " + rgba[ 2 ] + ", " + ( rgba[ 3 ] / 255.0 ) + ")";
 
 		FrameBuilder.
-				forScreen( new MainScreen( project ) ).
+				forScreen( app.createScreen() ).
 				show();
 
 		final HTMLElement canvas = ( HTMLElement ) document.querySelector( "canvas" );

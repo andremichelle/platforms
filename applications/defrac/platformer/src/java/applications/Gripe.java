@@ -1,4 +1,4 @@
-package projects;
+package applications;
 
 import defrac.display.DisplayObject;
 import defrac.display.Stage;
@@ -19,11 +19,11 @@ import javax.annotation.Nonnull;
 /**
  * @author Andre Michelle
  */
-public final class GripeGameTest
+public final class Gripe
 {
 	private static final MonitorFilter MonitorFilter = new MonitorFilter();
 
-	public GripeGameTest( @Nonnull final Stage stage )
+	public Gripe( @Nonnull final Stage stage )
 	{
 		final String levelFile = "fuzed.json"; // checks unreasonable objects drawing
 		System.out.println( "loading " + levelFile );

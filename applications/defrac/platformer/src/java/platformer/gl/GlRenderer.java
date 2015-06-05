@@ -321,6 +321,15 @@ public final class GlRenderer
 			initGL = false;
 			drawable = false;
 
+			gl.disable( GL.DITHER );
+			gl.disable( GL.STENCIL_TEST );
+			gl.disable( GL.CULL_FACE );
+			gl.disable( GL.DEPTH_TEST );
+			gl.depthFunc( GL.ALWAYS );
+			gl.enable( GL.BLEND );
+			gl.blendEquationSeparate( GL.FUNC_ADD, GL.FUNC_ADD );
+			gl.blendFuncSeparate( GL.ONE, GL.ONE_MINUS_SRC_ALPHA, GL.ONE, GL.ONE );
+
 			GlRenderStrategy.Default.get().initProgram( gl );
 			GlRenderStrategy.Orifice.get().initProgram( gl );
 		}
