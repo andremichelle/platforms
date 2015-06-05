@@ -2,8 +2,8 @@ package platformer.renderer;
 
 import defrac.display.Texture;
 import defrac.lang.Lists;
-import platformer.gl.GlRenderer;
-import platformer.gl.GlRenderStrategy;
+import platformer.gl.GLRenderer;
+import platformer.gl.GLRenderStrategy;
 import platformer.tmx.MapTileLayer;
 import platformer.tmx.TileFlags;
 import platformer.tmx.TileSet;
@@ -23,7 +23,7 @@ public final class TileRenderer implements Renderer
 {
 	private final RendererContext context;
 	private final MapTileLayer tileLayer;
-	private final GlRenderStrategy renderStrategy;
+	private final GLRenderStrategy renderStrategy;
 
 	private final List<Sprite> sprites;
 
@@ -31,13 +31,13 @@ public final class TileRenderer implements Renderer
 				@Nonnull final RendererContext context,
 				@Nonnull final MapTileLayer tileLayer )
 	{
-		this( context, tileLayer, GlRenderStrategy.Default.get() );
+		this( context, tileLayer, GLRenderStrategy.Default.get() );
 	}
 
 	public TileRenderer(
 			@Nonnull final RendererContext context,
 			@Nonnull final MapTileLayer tileLayer,
-			@Nonnull final GlRenderStrategy renderStrategy )
+			@Nonnull final GLRenderStrategy renderStrategy )
 	{
 		this.context = context;
 		this.tileLayer = tileLayer;
@@ -74,9 +74,9 @@ public final class TileRenderer implements Renderer
 			return;
 		}
 
-		final GlRenderer glRenderer = context.imageRenderer().alpha( tileLayer.opacity );
+		final GLRenderer GLRenderer = context.imageRenderer().alpha( tileLayer.opacity );
 
-		glRenderer.setRenderStrategy( renderStrategy );
+		GLRenderer.setRenderStrategy( renderStrategy );
 
 		final int numRows = context.height() != tileLayer.height ? context.height() + 1 : context.height();
 		final int numCols = context.width() != tileLayer.width ? context.width() + 1 : context.width();
@@ -132,7 +132,7 @@ public final class TileRenderer implements Renderer
 							final boolean flipHorizontally = 0 != ( dataEntry & TileFlags.FlipHorizontally );
 							final boolean flipVertically = 0 != ( dataEntry & TileFlags.FlipVertically );
 
-							glRenderer.draw(
+							GLRenderer.draw(
 									texture,
 									tileX * tileWidth - offsetX,
 									( tileY * tileHeight - offsetY ) - tileSet.tileHeight + tileHeight,
@@ -146,7 +146,7 @@ public final class TileRenderer implements Renderer
 			}
 		}
 
-		glRenderer.setRenderStrategy( GlRenderStrategy.Default.get() );
+		GLRenderer.setRenderStrategy( GLRenderStrategy.Default.get() );
 	}
 
 	@Override

@@ -1,12 +1,7 @@
 package applications;
 
-import defrac.display.DisplayObject;
-import defrac.display.Stage;
-import defrac.display.event.UIEventManager;
-import defrac.gl.GLFrameBuffer;
-import defrac.gl.GLSubstrate;
 import defrac.ui.GLSurface;
-import defrac.util.KeyCode;
+import defrac.ui.event.KeyEvent;
 import platformer.Platformer;
 import platformer.gl.MonitorFilter;
 import platformer.renderer.ObjectsRenderer;
@@ -18,12 +13,14 @@ import platformer.tmx.MapTileLayer;
 
 import javax.annotation.Nonnull;
 
-import static java.lang.Math.rint;
-
 /**
+ * This is not working right now.
+ * It is supposed to run without any DisplayList in future,
+ * but there are too many dependencies to a stage in the texture management for now.
+ *
  * @author Andre Michelle
  */
-public final class SuperMario
+public final class SuperMarioSurface
 {
 	private static final MonitorFilter MonitorFilter = new MonitorFilter();
 	private static final double Drag = 0.1;
@@ -35,7 +32,7 @@ public final class SuperMario
 	private double velocityX = 0.0;
 	private double velocityY = 0.0;
 
-	public SuperMario( @Nonnull final Stage stage )
+	public SuperMarioSurface( @Nonnull final GLSurface surface )
 	{
 		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
 		System.out.println( "loading " + levelFile );
@@ -55,45 +52,25 @@ public final class SuperMario
 					platformer.addRenderer( new ObjectsRenderer( platformer, ( MapObjectGroupLayer ) mapLayer ) );
 			}
 
-			final DisplayObject stageObject = stage.addChild( platformer.createDisplayObject() ).filter( MonitorFilter );
-
-			new GLSurface().renderer( new GLSurface.Renderer()
-			{
-				@Override
-				public void onSurfaceRender( @Nonnull final GLSubstrate glSubstrate )
-				{
-				}
-
-				@Override
-				public void onSurfaceChanged( @Nonnull final GLSubstrate glSubstrate, final GLFrameBuffer glFrameBuffer, final int i, final int i1 )
-				{
-
-				}
-
-				@Override
-				public void onSurfaceCreated( @Nonnull final GLSubstrate glSubstrate, final GLFrameBuffer glFrameBuffer )
-				{
-
-				}
-			} );
+			surface.renderer( platformer.createGLSurfaceRenderer() );
+			surface.onResume();
 
 			platformer.restartTime();
 
 			System.out.println( "all set... (use cursor keys to navigate)" );
 
-			final UIEventManager eventManager = stage.eventManager();
-
-			stage.globalEvents().onKeyUp.add( event -> {
-				if( event.keyCode == KeyCode.SPACE )
+			surface.keyListener( ( view, keyEvent ) -> {
+				if( keyEvent.type == KeyEvent.TYPE_DOWN )
 				{
-					if( null == stageObject.filter() )
-						stageObject.filter( MonitorFilter );
-					else
-						stageObject.filter( null );
+					// ...
 				}
+				return false;
 			} );
 
-			stage.globalEvents().onEnterFrame.add( ( ignore ) -> {
+			// TODO Get enterFrame?
+
+			/*
+			surface.globalEvents().onEnterFrame.add( ( ignore ) -> {
 
 				final boolean l = eventManager.isKeyDown( KeyCode.LEFT );
 				final boolean r = eventManager.isKeyDown( KeyCode.RIGHT );
@@ -133,7 +110,7 @@ public final class SuperMario
 					positionX = platformer.offsetX();
 					positionY = platformer.offsetY();
 				}
-			} );
+			} );*/
 		} );
 	}
 }

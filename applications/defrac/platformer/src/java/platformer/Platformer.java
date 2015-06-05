@@ -2,13 +2,10 @@ package platformer;
 
 import defrac.display.DisplayObject;
 import defrac.display.GLSurface;
-import defrac.display.Stage;
-import defrac.gl.GL;
 import defrac.gl.GLFrameBuffer;
-import defrac.gl.GLRenderBuffer;
-import defrac.gl.GLTexture;
+import defrac.gl.GLSubstrate;
 import defrac.lang.Lists;
-import platformer.gl.GlRenderer;
+import platformer.gl.GLRenderer;
 import platformer.renderer.Renderer;
 import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
@@ -17,13 +14,12 @@ import platformer.tmx.TileSet;
 import platformer.utils.TinyConsole;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * @author Andre Michelle
  */
-public final class Platformer implements GLSurface.Renderer, RendererContext
+public final class Platformer implements RendererContext
 {
 	private final MapData mapData;
 	private final int width;
@@ -32,9 +28,7 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 	private final int pixelWidth;
 	private final int pixelHeight;
 
-	private final GLSurface surface;
-
-	private final GlRenderer glRenderer;
+	private final GLRenderer glRenderer;
 
 	private final List<Renderer> renderPipe;
 
@@ -53,9 +47,7 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 		pixelWidth = width * mapData.tileWidth;
 		pixelHeight = height * mapData.tileHeight;
 
-		surface = new GLSurface( pixelWidth, pixelHeight, this );
-
-		glRenderer = new GlRenderer( 256 );
+		glRenderer = new GLRenderer( 256 );
 
 		renderPipe = Lists.newArrayList();
 
@@ -131,7 +123,7 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 
 	@Nonnull
 	@Override
-	public GlRenderer imageRenderer()
+	public GLRenderer imageRenderer()
 	{
 		return glRenderer;
 	}
@@ -140,35 +132,6 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 	public int currentTime()
 	{
 		return time;
-	}
-
-	@Override
-	public void onGLSurfaceRender( @Nonnull final GLSurface surface,
-								   @Nonnull final GL gl,
-								   @Nonnull final GLFrameBuffer frameBuffer,
-								   @Nullable final GLRenderBuffer renderBuffer,
-								   @Nonnull final GLTexture surfaceTexture,
-								   final float width, final float height,
-								   final int viewportWidth, final int viewportHeight,
-								   final boolean transparent )
-	{
-		final Stage stage = surface.stage();
-
-		if( null == stage )
-			return;
-
-		time = ( int ) ( System.currentTimeMillis() - startTime );
-
-		glRenderer.begin( stage, gl, width, height, mapData.backgroundColor );
-
-		for( final Renderer pipe : renderPipe )
-			pipe.renderLayer();
-
-		glRenderer.complete();
-
-		final TinyConsole console = TinyConsole.get();
-
-		console.log( "Calls " + glRenderer.drawCalls, "Triangles " + glRenderer.drawTriangles );
 	}
 
 	public void addRenderer( @Nonnull final Renderer renderer )
@@ -214,7 +177,12 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 		return true;
 	}
 
-	public void center( final Sprite sprite )
+	/**
+	 * Centers a sprite.
+	 *
+	 * @param sprite The target sprite to be aligned to.
+	 */
+	public void center( @Nonnull final Sprite sprite )
 	{
 		moveTo( sprite.x() + ( sprite.width() - pixelWidth ) / 2, sprite.y() - pixelHeight / 2 );
 	}
@@ -228,12 +196,59 @@ public final class Platformer implements GLSurface.Renderer, RendererContext
 	}
 
 	/**
-	 * @return The displayObject to be added on stage
+	 * Creates a displayObject for the displayList
+	 *
+	 * @return A DisplayObject
 	 */
 	@Nonnull
-	public DisplayObject displayObject()
+	public DisplayObject createDisplayObject()
 	{
-		return surface;
+		return new GLSurface( pixelWidth, pixelHeight, ( surface1, gl, frameBuffer, renderBuffer, surfaceTexture, width, height, viewportWidth, viewportHeight, transparent ) -> {
+			renderCycle( gl );
+			TinyConsole.get().log( "Calls " + glRenderer.drawCalls, "Triangles " + glRenderer.drawTriangles );
+		} );
+	}
+
+	/**
+	 * Creates a ui.GLSurface.Renderer
+	 *
+	 * @return A ui.GLSurface.Renderer
+	 */
+	@Nonnull
+	public defrac.ui.GLSurface.Renderer createGLSurfaceRenderer()
+	{
+		return new defrac.ui.GLSurface.Renderer()
+		{
+			@Override
+			public void onSurfaceRender( @Nonnull final GLSubstrate glSubstrate )
+			{
+				renderCycle( glSubstrate );
+			}
+
+			@Override
+			public void onSurfaceChanged( @Nonnull final GLSubstrate glSubstrate, final GLFrameBuffer glFrameBuffer, final int i, final int i1 )
+			{
+				// TODO Invalide GL programs
+			}
+
+			@Override
+			public void onSurfaceCreated( @Nonnull final GLSubstrate glSubstrate, final GLFrameBuffer glFrameBuffer )
+			{
+				// TODO Invalide GL programs
+			}
+		};
+	}
+
+	private void renderCycle( @Nonnull final GLSubstrate glSubstrate )
+	{
+		time = ( int ) ( System.currentTimeMillis() - startTime );
+
+		glRenderer.begin( glSubstrate, pixelWidth, pixelHeight, mapData.backgroundColor );
+
+		for( final Renderer pipe : renderPipe )
+			pipe.renderLayer();
+
+		glRenderer.complete();
 	}
 
 	@Nonnull

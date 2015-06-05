@@ -1,11 +1,11 @@
 package platformer.gl;
 
-import defrac.display.Stage;
 import defrac.display.Texture;
 import defrac.display.TextureData;
 import defrac.gl.GL;
 import defrac.gl.GLBuffer;
 import defrac.gl.GLMatrix;
+import defrac.gl.GLSubstrate;
 import defrac.util.Color;
 
 import javax.annotation.Nonnull;
@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
  *
  * @author Andre Michelle
  */
-public final class GlRenderer
+public final class GLRenderer
 {
 	private static final int BufferNumProperties = 4;
 	private static final int BufferNumVertices = 6;
@@ -27,10 +27,11 @@ public final class GlRenderer
 	private final GLMatrix glMatrix;
 	private final float[] buffer;
 
+	private final GLTextureCache textureCache;
+
 	// GLContext
 	private GLBuffer glBuffer;
-	private Stage stage = null;
-	private GL gl = null;
+	private GLSubstrate glSubstrate = null;
 
 	private final int bufferSize;
 
@@ -50,14 +51,16 @@ public final class GlRenderer
 	private boolean drawable;
 
 	@Nonnull
-	private GlRenderStrategy renderStrategy;
+	private GLRenderStrategy renderStrategy;
 
 	/**
 	 * @param capacity The number of textures that can be stored as geometry
 	 */
-	public GlRenderer( final int capacity )
+	public GLRenderer( final int capacity )
 	{
 		glMatrix = new GLMatrix();
+
+		textureCache = new GLTextureCache();
 
 		bufferSize = BufferNumProperties * BufferNumVertices * capacity;
 
@@ -65,12 +68,12 @@ public final class GlRenderer
 
 		alpha = 1f;
 
-		renderStrategy = GlRenderStrategy.Default.get();
+		renderStrategy = GLRenderStrategy.Default.get();
 
 		System.out.println( "glBuffer: " + ( ( bufferSize * BufferSizeFloat ) >> 10 ) + "kb" );
 	}
 
-	public void setRenderStrategy( @Nonnull final GlRenderStrategy strategy )
+	public void setRenderStrategy( @Nonnull final GLRenderStrategy strategy )
 	{
 		if( strategy != renderStrategy )
 		{
@@ -84,18 +87,16 @@ public final class GlRenderer
 	/**
 	 * Starts the draw phase
 	 *
-	 * @param stage           The current stage
-	 * @param gl              The current GL
+	 * @param glSubstrate     The current GL
 	 * @param width           The width of the view-port
 	 * @param height          The height of the view-port
 	 * @param backgroundColor The color of the background
 	 */
-	public void begin( @Nonnull final Stage stage, @Nonnull final GL gl, final float width, final float height, final int backgroundColor )
+	public void begin( @Nonnull final GLSubstrate glSubstrate, final float width, final float height, final int backgroundColor )
 	{
 		assert !drawPhase : "draw phase out of order";
 
-		this.stage = stage;
-		this.gl = gl;
+		this.glSubstrate = glSubstrate;
 
 		drawCalls = 0;
 		drawTriangles = 0;
@@ -114,7 +115,7 @@ public final class GlRenderer
 	 * @return GlRenderer to chain method calls
 	 */
 	@Nonnull
-	public GlRenderer alpha( final float value )
+	public GLRenderer alpha( final float value )
 	{
 		assert drawPhase : "draw phase out of order";
 
@@ -307,8 +308,7 @@ public final class GlRenderer
 		if( 0 < bufferPointer )
 			call();
 
-		gl = null;
-		stage = null;
+		glSubstrate = null;
 		textureData = null;
 		bufferPointer = 0;
 		drawPhase = false;
@@ -318,31 +318,33 @@ public final class GlRenderer
 	{
 		if( initGL )
 		{
+			System.out.println( "init gl" );
+
 			initGL = false;
 			drawable = false;
 
-			gl.disable( GL.DITHER );
-			gl.disable( GL.STENCIL_TEST );
-			gl.disable( GL.CULL_FACE );
-			gl.disable( GL.DEPTH_TEST );
-			gl.depthFunc( GL.ALWAYS );
-			gl.enable( GL.BLEND );
-			gl.blendEquationSeparate( GL.FUNC_ADD, GL.FUNC_ADD );
-			gl.blendFuncSeparate( GL.ONE, GL.ONE_MINUS_SRC_ALPHA, GL.ONE, GL.ONE );
+			glSubstrate.disable( GL.DITHER );
+			glSubstrate.disable( GL.STENCIL_TEST );
+			glSubstrate.disable( GL.CULL_FACE );
+			glSubstrate.disable( GL.DEPTH_TEST );
+			glSubstrate.depthFunc( GL.ALWAYS );
+			glSubstrate.enable( GL.BLEND );
+			glSubstrate.blendEquationSeparate( GL.FUNC_ADD, GL.FUNC_ADD );
+			glSubstrate.blendFuncSeparate( GL.ONE, GL.ONE_MINUS_SRC_ALPHA, GL.ONE, GL.ONE );
 
-			GlRenderStrategy.Default.get().initProgram( gl );
-			GlRenderStrategy.Orifice.get().initProgram( gl );
+			GLRenderStrategy.Default.get().initProgram( glSubstrate );
+			GLRenderStrategy.Orifice.get().initProgram( glSubstrate );
 		}
 
 		if( null == glBuffer )
 		{
-			glBuffer = gl.createBuffer();
-			gl.bindBuffer( GL.ARRAY_BUFFER, glBuffer );
-			gl.bufferData( GL.ARRAY_BUFFER, buffer, 0, bufferSize, GL.STATIC_DRAW );
+			glBuffer = glSubstrate.createBuffer();
+			glSubstrate.bindBuffer( GL.ARRAY_BUFFER, glBuffer );
+			glSubstrate.bufferData( GL.ARRAY_BUFFER, buffer, 0, bufferSize, GL.STATIC_DRAW );
 		}
 		else
 		{
-			gl.bindBuffer( GL.ARRAY_BUFFER, glBuffer );
+			glSubstrate.bindBuffer( GL.ARRAY_BUFFER, glBuffer );
 		}
 
 		drawable = true;
@@ -350,17 +352,17 @@ public final class GlRenderer
 		glMatrix.identity();
 		glMatrix.ortho( 0f, width, height, 0f, 0f, 1f );
 
-		gl.viewport( 0, 0, ( int ) width, ( int ) height );
-		gl.clearColor( background[ 0 ], background[ 1 ], background[ 2 ], background[ 3 ] );
-		gl.clear( GL.COLOR_BUFFER_BIT );
+		glSubstrate.viewport( 0, 0, ( int ) width, ( int ) height );
+		glSubstrate.clearColor( background[ 0 ], background[ 1 ], background[ 2 ], background[ 3 ] );
+		glSubstrate.clear( GL.COLOR_BUFFER_BIT );
 
-		gl.enable( GL.BLEND );
-		gl.blendFunc( GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA );
+		glSubstrate.enable( GL.BLEND );
+		glSubstrate.blendFunc( GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA );
 
-		gl.enableVertexAttribArray( 0 );
-		gl.vertexAttribPointer( 0, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 0 );
-		gl.enableVertexAttribArray( 1 );
-		gl.vertexAttribPointer( 1, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 2 * BufferSizeFloat );
+		glSubstrate.enableVertexAttribArray( 0 );
+		glSubstrate.vertexAttribPointer( 0, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 0 );
+		glSubstrate.enableVertexAttribArray( 1 );
+		glSubstrate.vertexAttribPointer( 1, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 2 * BufferSizeFloat );
 
 		textureData = null;
 		bufferPointer = 0;
@@ -370,7 +372,7 @@ public final class GlRenderer
 	{
 		assert drawPhase : "draw phase out of order";
 
-		if( null == stage || null == gl || !drawable )
+		if( null == glSubstrate || !drawable )
 		{
 			bufferPointer = 0;
 			return;
@@ -379,14 +381,14 @@ public final class GlRenderer
 		if( 0 == bufferPointer )
 			return;
 
-		renderStrategy.initDraw( gl, glMatrix, alpha );
+		renderStrategy.initDraw( glSubstrate, glMatrix, alpha );
 
-		gl.activeTexture( GL.TEXTURE0 );
-		gl.bindTexture( GL.TEXTURE_2D, stage.getOrCreateTexture( textureData ) );
+		glSubstrate.activeTexture( GL.TEXTURE0 );
+		glSubstrate.bindTexture( GL.TEXTURE_2D, textureCache.getOrCreateTexture( glSubstrate, textureData ) );
 
-		gl.bindBuffer( GL.ARRAY_BUFFER, glBuffer );
-		gl.bufferSubData( GL.ARRAY_BUFFER, 0, buffer, 0, bufferPointer );
-		gl.drawArrays( GL.TRIANGLES, 0, bufferPointer / BufferNumProperties );
+		glSubstrate.bindBuffer( GL.ARRAY_BUFFER, glBuffer );
+		glSubstrate.bufferSubData( GL.ARRAY_BUFFER, 0, buffer, 0, bufferPointer );
+		glSubstrate.drawArrays( GL.TRIANGLES, 0, bufferPointer / BufferNumProperties );
 
 		bufferPointer = 0;
 		drawCalls++;

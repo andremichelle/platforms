@@ -5,7 +5,7 @@ import defrac.display.Stage;
 import defrac.display.Stats;
 import defrac.util.KeyCode;
 import platformer.Platformer;
-import platformer.gl.GlRenderStrategy;
+import platformer.gl.GLRenderStrategy;
 import platformer.gl.MonitorFilter;
 import platformer.renderer.SpriteLayer;
 import platformer.renderer.TileRenderer;
@@ -46,7 +46,7 @@ public final class Gripe
 					final TileRenderer renderer;
 					if( "hidden".equals( mapLayer.name ) )
 					{
-						renderer = new TileRenderer( platformer, ( MapTileLayer ) mapLayer, GlRenderStrategy.Orifice.get() );
+						renderer = new TileRenderer( platformer, ( MapTileLayer ) mapLayer, GLRenderStrategy.Orifice.get() );
 					}
 					else
 					{
@@ -62,12 +62,11 @@ public final class Gripe
 				}
 			}
 
-			final DisplayObject stageObject = stage.addChild( platformer.displayObject() ).
+			final DisplayObject stageObject = stage.addChild( platformer.createDisplayObject() ).
 					moveTo( 0f, 64f ).
 					filter( MonitorFilter );
 
 			stage.addChild( TinyConsole.get() ).moveTo( platformer.pixelWidth() - TinyConsole.Width, 0f );
-			stage.addChild( platformer.displayObject() );
 			stage.addChild( new Stats() );
 
 			platformer.restartTime();
@@ -87,7 +86,7 @@ public final class Gripe
 
 			stage.globalEvents().onEnterFrame.add( ( ignore ) -> {
 				platformer.center( sprite );
-				GlRenderStrategy.Orifice.get().setCircle(
+				GLRenderStrategy.Orifice.get().setCircle(
 						sprite.x() - platformer.offsetX() + sprite.width() / 2,
 						sprite.y() - platformer.offsetY(),
 						48f );

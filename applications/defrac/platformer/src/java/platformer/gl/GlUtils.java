@@ -3,6 +3,7 @@ package platformer.gl;
 import defrac.gl.GL;
 import defrac.gl.GLProgram;
 import defrac.gl.GLShader;
+import defrac.gl.GLSubstrate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,11 +12,11 @@ import javax.annotation.Nullable;
  * @author Joa Ebert
  */
 
-final class GlUtils
+final class GLUtils
 {
 	@Nullable
 	static GLShader createShader(
-			@Nonnull final GL gl,
+			@Nonnull final GLSubstrate gl,
 			@Nonnull final String source,
 			final int type )
 	{
@@ -38,7 +39,7 @@ final class GlUtils
 	}
 
 	static boolean linkProgram(
-			@Nonnull final GL gl,
+			@Nonnull final GLSubstrate gl,
 			@Nonnull final GLProgram program,
 			@Nonnull final GLShader vertexShader,
 			@Nonnull final GLShader fragmentShader,

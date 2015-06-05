@@ -4,21 +4,22 @@ import defrac.gl.GL;
 import defrac.gl.GLMatrix;
 import defrac.gl.GLProgram;
 import defrac.gl.GLShader;
+import defrac.gl.GLSubstrate;
 import defrac.gl.GLUniformLocation;
 
 import javax.annotation.Nonnull;
 
-import static platformer.gl.GlUtils.createShader;
-import static platformer.gl.GlUtils.linkProgram;
+import static platformer.gl.GLUtils.createShader;
+import static platformer.gl.GLUtils.linkProgram;
 
 /**
  * @author Andre Michelle
  */
-public interface GlRenderStrategy
+public interface GLRenderStrategy
 {
-	void initProgram( @Nonnull final GL gl );
+	void initProgram( @Nonnull final GLSubstrate gl );
 
-	void initDraw( @Nonnull final GL gl, final GLMatrix glMatrix, final float alpha );
+	void initDraw( @Nonnull final GLSubstrate gl, final GLMatrix glMatrix, final float alpha );
 
 	class Orifice extends Default
 	{
@@ -75,7 +76,7 @@ public interface GlRenderStrategy
 		}
 
 		@Override
-		protected void loadUniforms( final @Nonnull GL gl )
+		protected void loadUniforms( final @Nonnull GLSubstrate gl )
 		{
 			super.loadUniforms( gl );
 
@@ -83,7 +84,7 @@ public interface GlRenderStrategy
 		}
 
 		@Override
-		public void initDraw( @Nonnull final GL gl, @Nonnull final GLMatrix glMatrix, final float alpha )
+		public void initDraw( @Nonnull final GLSubstrate gl, @Nonnull final GLMatrix glMatrix, final float alpha )
 		{
 			super.initDraw( gl, glMatrix, alpha );
 
@@ -91,7 +92,7 @@ public interface GlRenderStrategy
 		}
 	}
 
-	class Default implements GlRenderStrategy
+	class Default implements GLRenderStrategy
 	{
 		public static Default get()
 		{
@@ -139,7 +140,7 @@ public interface GlRenderStrategy
 		}
 
 		@Override
-		public void initProgram( @Nonnull final GL gl )
+		public void initProgram( @Nonnull final GLSubstrate gl )
 		{
 			if( null != program )
 			{
@@ -169,7 +170,7 @@ public interface GlRenderStrategy
 			ready = true;
 		}
 
-		protected void loadUniforms( final @Nonnull GL gl )
+		protected void loadUniforms( final @Nonnull GLSubstrate gl )
 		{
 			matrixLocation = gl.getUniformLocation( program, "pMatrix" );
 			textureLocation = gl.getUniformLocation( program, "texture" );
@@ -177,7 +178,7 @@ public interface GlRenderStrategy
 		}
 
 		@Override
-		public void initDraw( @Nonnull final GL gl, @Nonnull final GLMatrix glMatrix, final float alpha )
+		public void initDraw( @Nonnull final GLSubstrate gl, @Nonnull final GLMatrix glMatrix, final float alpha )
 		{
 			if( !ready )
 				return;

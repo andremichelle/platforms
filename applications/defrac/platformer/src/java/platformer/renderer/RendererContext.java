@@ -1,6 +1,6 @@
 package platformer.renderer;
 
-import platformer.gl.GlRenderer;
+import platformer.gl.GLRenderer;
 import platformer.tmx.TileSet;
 
 import javax.annotation.Nonnull;
@@ -70,7 +70,7 @@ public interface RendererContext
 	 * @return The ImageRenderer to render images in GL context
 	 */
 	@Nonnull
-	GlRenderer imageRenderer();
+	GLRenderer imageRenderer();
 
 	/**
 	 * @return The currentTime in milliseconds for animations

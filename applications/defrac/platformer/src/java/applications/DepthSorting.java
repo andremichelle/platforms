@@ -60,7 +60,7 @@ public final class DepthSorting
 			}
 
 			stage.addChild( TinyConsole.get() ).moveTo( platformer.pixelWidth() - TinyConsole.Width, 0f );
-			stage.addChild( platformer.displayObject() ).moveTo( 0f, 64f );
+			stage.addChild( platformer.createDisplayObject() ).moveTo( 0f, 64f );
 			stage.addChild( new Stats() );
 
 			platformer.restartTime();
