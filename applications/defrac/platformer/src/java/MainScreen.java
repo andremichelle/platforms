@@ -79,7 +79,6 @@ public final class MainScreen extends Screen
 						project.height, PixelUnits.DP ).
 						gravity( Gravity.CENTER ) );
 
-		layout.padding( PixelUnits.PX.convert( 10, PixelUnits.DP ) );
 		layout.addView( displayList );
 
 		rootView( layout );

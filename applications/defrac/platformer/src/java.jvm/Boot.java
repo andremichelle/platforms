@@ -1,7 +1,6 @@
 import defrac.concurrent.Dispatchers;
 import defrac.ui.FrameBuilder;
-
-import java.awt.*;
+import defrac.util.Color;
 
 /**
  * @author Andre Michelle
@@ -14,17 +13,14 @@ public final class Boot
 		final Project project = Project.GripeGame;
 //		final Project project = Project.DepthSorting;
 
-		Dispatchers.FOREGROUND.exec( () -> {
-			final Frame frame =
-					FrameBuilder.
-							forScreen( new MainScreen( project ) ).
-							resizable().
-							width( project.width + 100 ).
-							height( project.height + 100 ).
-							title( project.title ).
-							show();
-
-			frame.setBackground( Color.BLACK );
-		} );
+		Dispatchers.FOREGROUND.exec( () ->
+				FrameBuilder.
+						forScreen( new MainScreen( project ) ).
+						resizable().
+						width( project.width ).
+						height( project.height ).
+						title( project.title ).
+						backgroundColor( Color.Web.BLACK ).
+						show());
 	}
 }
