@@ -23,11 +23,11 @@ public final class GLTextureCache
 		if( null == glTexture )
 		{
 			glTexture = glSubstrate.createTexture();
-			glSubstrate.bindTexture( GL.TEXTURE_2D, glTexture);
+			glSubstrate.bindTexture( GL.TEXTURE_2D, glTexture );
 			glSubstrate.texParameteri( GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR );
-			glSubstrate.texParameteri( GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_NEAREST);
-			textureData.texImage2D( glSubstrate, GL.TEXTURE_2D, 0, textureData.format().hasAlpha() ? GL.RGBA : GL.RGB, 0);
-			glSubstrate.bindTexture(GL.TEXTURE_2D, null);
+			glSubstrate.texParameteri( GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR );
+			textureData.texImage2D( glSubstrate, GL.TEXTURE_2D, 0, textureData.format().hasAlpha() ? GL.RGBA : GL.RGB, 0 );
+			glSubstrate.bindTexture( GL.TEXTURE_2D, null );
 
 			cache.put( textureData, glTexture );
 		}
