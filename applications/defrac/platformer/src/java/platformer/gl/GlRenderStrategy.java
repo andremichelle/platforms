@@ -170,7 +170,7 @@ public interface GLRenderStrategy
 			ready = true;
 		}
 
-		protected void loadUniforms( final @Nonnull GLSubstrate gl )
+		protected void loadUniforms( @Nonnull final GLSubstrate gl )
 		{
 			matrixLocation = gl.getUniformLocation( program, "pMatrix" );
 			textureLocation = gl.getUniformLocation( program, "texture" );

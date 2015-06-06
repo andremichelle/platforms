@@ -3,9 +3,6 @@ package applications;
 import defrac.display.DisplayObject;
 import defrac.display.Stage;
 import defrac.display.event.UIEventManager;
-import defrac.gl.GLFrameBuffer;
-import defrac.gl.GLSubstrate;
-import defrac.ui.GLSurface;
 import defrac.util.KeyCode;
 import platformer.Platformer;
 import platformer.gl.MonitorFilter;
@@ -37,7 +34,7 @@ public final class SuperMario
 
 	public SuperMario( @Nonnull final Stage stage )
 	{
-		final String levelFile = "mario-1-1.json"; // checks unreasonable objects drawing
+		final String levelFile = "mario-1-1.json";
 		System.out.println( "loading " + levelFile );
 
 		MapResources.load( levelFile ).onSuccess( mapData -> {
@@ -56,26 +53,6 @@ public final class SuperMario
 			}
 
 			final DisplayObject stageObject = stage.addChild( platformer.createDisplayObject() ).filter( MonitorFilter );
-
-			new GLSurface().renderer( new GLSurface.Renderer()
-			{
-				@Override
-				public void onSurfaceRender( @Nonnull final GLSubstrate glSubstrate )
-				{
-				}
-
-				@Override
-				public void onSurfaceChanged( @Nonnull final GLSubstrate glSubstrate, final GLFrameBuffer glFrameBuffer, final int i, final int i1 )
-				{
-
-				}
-
-				@Override
-				public void onSurfaceCreated( @Nonnull final GLSubstrate glSubstrate, final GLFrameBuffer glFrameBuffer )
-				{
-
-				}
-			} );
 
 			platformer.restartTime();
 
