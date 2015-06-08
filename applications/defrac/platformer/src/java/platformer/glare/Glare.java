@@ -57,6 +57,7 @@ public final class Glare
 	@Nullable
 	private GLSubstrate glSubstrate;
 
+
 	@Nullable
 	public GLBuffer glBuffer;
 	public final GlareTextureCache textureCache;
@@ -64,6 +65,7 @@ public final class Glare
 	public final float[] buffer;
 	public final int bufferSize;
 	public int bufferPointer;
+	public int drawCalls;
 
 	private Glare( @Nonnull final HashMap<Class<? extends GlareProgram>, GlareProgram.Factory> register )
 	{
@@ -124,6 +126,7 @@ public final class Glare
 		glSubstrate.clearColor( background[ 0 ], background[ 1 ], background[ 2 ], background[ 3 ] );
 		glSubstrate.clear( GL.COLOR_BUFFER_BIT );
 
+		drawCalls = 0;
 		bufferPointer = 0;
 
 		this.glSubstrate = glSubstrate;
@@ -171,6 +174,7 @@ public final class Glare
 
 		program.finalizeDraw( glSubstrate );
 
+		drawCalls++;
 		bufferPointer = 0;
 	}
 

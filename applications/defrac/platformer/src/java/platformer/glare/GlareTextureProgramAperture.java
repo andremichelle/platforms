@@ -43,9 +43,9 @@ public final class GlareTextureProgramAperture extends GlareTextureProgram imple
 						"varying vec2 vXy;" +
 						"void main()" +
 						"{" +
-						" vec4 pixel = texture2D( texture, vUv );" +
-						" float distanceAlpha = max(0.0,min(1.0,0.5*(distance(circle.xy, vXy) - circle.z)));" +
-						" gl_FragColor = vec4( pixel.rgb, pixel.a * alpha * distanceAlpha );" +
+						"	vec4 pixel = texture2D( texture, vUv );" +
+						"	float distanceAlpha = max(0.0,min(1.0,0.5*(distance(circle.xy, vXy) - circle.z)));" +
+						"	gl_FragColor = vec4( pixel.rgb, pixel.a * alpha * distanceAlpha );" +
 						"}"
 		);
 

@@ -15,6 +15,7 @@ import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
 import platformer.tmx.MapData;
 import platformer.tmx.TileSet;
+import platformer.utils.TinyConsole;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -218,7 +219,7 @@ public final class Platformer implements RendererContext
 	{
 		return new GLSurface( pixelWidth, pixelHeight, ( surface1, gl, frameBuffer, renderBuffer, surfaceTexture, width, height, viewportWidth, viewportHeight, transparent ) -> {
 			renderCycle( gl );
-			//TinyConsole.get().log( "Calls " + glRenderer.drawCalls, "Triangles " + glRenderer.drawTriangles );
+			TinyConsole.get().log( "Calls " + glare.drawCalls );
 		} );
 	}
 
