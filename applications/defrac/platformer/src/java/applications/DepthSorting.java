@@ -7,6 +7,7 @@ import defrac.display.TextureData;
 import defrac.geom.Point;
 import defrac.resource.TextureDataResource;
 import platformer.Platformer;
+import platformer.glare.GlareTextureProgram;
 import platformer.renderer.ObjectsRenderer;
 import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
@@ -176,7 +177,7 @@ public final class DepthSorting
 			if( null == texture )
 				return;
 
-			context.imageRenderer().draw(
+			context.glare().getProgram( GlareTextureProgram.class ).draw(
 					texture,
 					x - context.offsetX(),
 					y - context.offsetY() - Size + context.tileHeight(),

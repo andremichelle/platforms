@@ -5,7 +5,7 @@ import defrac.display.Stage;
 import defrac.display.event.UIEventManager;
 import defrac.util.KeyCode;
 import platformer.Platformer;
-import platformer.gl.MonitorFilter;
+import platformer.filter.MonitorFilter;
 import platformer.renderer.ObjectsRenderer;
 import platformer.renderer.TileRenderer;
 import platformer.tmx.MapLayer;

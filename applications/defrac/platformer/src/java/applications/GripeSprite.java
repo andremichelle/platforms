@@ -7,6 +7,7 @@ import defrac.display.event.UIEventManager;
 import defrac.resource.TextureDataResource;
 import defrac.util.KeyCode;
 import platformer.Platformer;
+import platformer.glare.GlareTextureProgram;
 import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
 import platformer.tmx.MapData;
@@ -297,7 +298,7 @@ public final class GripeSprite implements Sprite
 			}
 		}
 
-		context.imageRenderer().draw(
+		context.glare().getProgram( GlareTextureProgram.class ).draw(
 				texture,
 				( int ) positionX - context.offsetX(),
 				( int ) positionY - context.offsetY() - Size + context.tileHeight() + 1,

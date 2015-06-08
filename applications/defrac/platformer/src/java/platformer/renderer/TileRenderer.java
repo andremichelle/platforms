@@ -2,8 +2,7 @@ package platformer.renderer;
 
 import defrac.display.Texture;
 import defrac.lang.Lists;
-import platformer.gl.GLRenderer;
-import platformer.gl.GLRenderStrategy;
+import platformer.glare.GlareTextureProgram;
 import platformer.tmx.MapTileLayer;
 import platformer.tmx.TileFlags;
 import platformer.tmx.TileSet;
@@ -23,25 +22,25 @@ public final class TileRenderer implements Renderer
 {
 	private final RendererContext context;
 	private final MapTileLayer tileLayer;
-	private final GLRenderStrategy renderStrategy;
+	private final GlareTextureProgram textureProgram;
 
 	private final List<Sprite> sprites;
 
 	public TileRenderer(
-				@Nonnull final RendererContext context,
-				@Nonnull final MapTileLayer tileLayer )
+			@Nonnull final RendererContext context,
+			@Nonnull final MapTileLayer tileLayer )
 	{
-		this( context, tileLayer, GLRenderStrategy.Default.get() );
+		this( context, tileLayer, context.glare().getProgram( GlareTextureProgram.class ) );
 	}
 
 	public TileRenderer(
 			@Nonnull final RendererContext context,
 			@Nonnull final MapTileLayer tileLayer,
-			@Nonnull final GLRenderStrategy renderStrategy )
+			@Nonnull final GlareTextureProgram textureProgram )
 	{
 		this.context = context;
 		this.tileLayer = tileLayer;
-		this.renderStrategy = renderStrategy;
+		this.textureProgram = textureProgram;
 
 		sprites = Lists.newLinkedList();
 	}
@@ -70,13 +69,9 @@ public final class TileRenderer implements Renderer
 	public void renderLayer()
 	{
 		if( !tileLayer.visible )
-		{
 			return;
-		}
 
-		final GLRenderer GLRenderer = context.imageRenderer().alpha( tileLayer.opacity );
-
-		GLRenderer.setRenderStrategy( renderStrategy );
+		textureProgram.alpha( tileLayer.opacity );
 
 		final int numRows = context.height() != tileLayer.height ? context.height() + 1 : context.height();
 		final int numCols = context.width() != tileLayer.width ? context.width() + 1 : context.width();
@@ -132,7 +127,7 @@ public final class TileRenderer implements Renderer
 							final boolean flipHorizontally = 0 != ( dataEntry & TileFlags.FlipHorizontally );
 							final boolean flipVertically = 0 != ( dataEntry & TileFlags.FlipVertically );
 
-							GLRenderer.draw(
+							textureProgram.draw(
 									texture,
 									tileX * tileWidth - offsetX,
 									( tileY * tileHeight - offsetY ) - tileSet.tileHeight + tileHeight,
@@ -144,9 +139,9 @@ public final class TileRenderer implements Renderer
 					}
 				}
 			}
-		}
 
-		GLRenderer.setRenderStrategy( GLRenderStrategy.Default.get() );
+			//context.glare().getProgram( GlareRectangleProgram.class ).color( new float[]{ 1f, 1f, 0f, 1f } ).rect( 128, 64, 16, 16 );
+		}
 	}
 
 	@Override

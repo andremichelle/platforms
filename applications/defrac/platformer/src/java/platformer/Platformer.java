@@ -5,13 +5,16 @@ import defrac.display.GLSurface;
 import defrac.gl.GLFrameBuffer;
 import defrac.gl.GLSubstrate;
 import defrac.lang.Lists;
-import platformer.gl.GLRenderer;
+import defrac.util.Color;
+import platformer.glare.Glare;
+import platformer.glare.GlareRectangleProgram;
+import platformer.glare.GlareTextureProgram;
+import platformer.glare.GlareTextureProgramAperture;
 import platformer.renderer.Renderer;
 import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
 import platformer.tmx.MapData;
 import platformer.tmx.TileSet;
-import platformer.utils.TinyConsole;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -28,7 +31,7 @@ public final class Platformer implements RendererContext
 	private final int pixelWidth;
 	private final int pixelHeight;
 
-	private final GLRenderer glRenderer;
+	private final Glare glare;
 
 	private final List<Renderer> renderPipe;
 
@@ -47,7 +50,12 @@ public final class Platformer implements RendererContext
 		pixelWidth = width * mapData.tileWidth;
 		pixelHeight = height * mapData.tileHeight;
 
-		glRenderer = new GLRenderer( 256 );
+		glare = new Glare.Builder().
+				addProgram( GlareTextureProgram.class, GlareTextureProgram::new ).
+				addProgram( GlareTextureProgramAperture.class, GlareTextureProgramAperture::new ).
+				addProgram( GlareRectangleProgram.class, GlareRectangleProgram::new ).
+				build();
+		glare.background( Color.extract( mapData.backgroundColor, new float[ 4 ] ) );
 
 		renderPipe = Lists.newArrayList();
 
@@ -122,10 +130,9 @@ public final class Platformer implements RendererContext
 	}
 
 	@Nonnull
-	@Override
-	public GLRenderer imageRenderer()
+	public Glare glare()
 	{
-		return glRenderer;
+		return glare;
 	}
 
 	@Override
@@ -195,6 +202,12 @@ public final class Platformer implements RendererContext
 		startTime = System.currentTimeMillis();
 	}
 
+	@Nonnull
+	public MapData mapData()
+	{
+		return mapData;
+	}
+
 	/**
 	 * Creates a displayObject for the displayList
 	 *
@@ -205,7 +218,7 @@ public final class Platformer implements RendererContext
 	{
 		return new GLSurface( pixelWidth, pixelHeight, ( surface1, gl, frameBuffer, renderBuffer, surfaceTexture, width, height, viewportWidth, viewportHeight, transparent ) -> {
 			renderCycle( gl );
-			TinyConsole.get().log( "Calls " + glRenderer.drawCalls, "Triangles " + glRenderer.drawTriangles );
+			//TinyConsole.get().log( "Calls " + glRenderer.drawCalls, "Triangles " + glRenderer.drawTriangles );
 		} );
 	}
 
@@ -243,18 +256,14 @@ public final class Platformer implements RendererContext
 	{
 		time = ( int ) ( System.currentTimeMillis() - startTime );
 
-		glRenderer.begin( glSubstrate, pixelWidth, pixelHeight, mapData.backgroundColor );
+		glare.prepare( glSubstrate, pixelWidth, pixelHeight );
 
 		for( final Renderer pipe : renderPipe )
+		{
 			pipe.renderLayer();
+		}
 
-		glRenderer.complete();
-	}
-
-	@Nonnull
-	public MapData mapData()
-	{
-		return mapData;
+		glare.complete();
 	}
 
 	@Override

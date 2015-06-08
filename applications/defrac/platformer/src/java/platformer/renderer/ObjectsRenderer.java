@@ -2,6 +2,7 @@ package platformer.renderer;
 
 import defrac.display.graphics.Graphics;
 import defrac.geom.Point;
+import platformer.glare.GlareTextureProgram;
 import platformer.tmx.MapObject;
 import platformer.tmx.MapObjectGroupLayer;
 import platformer.tmx.ObjectEllipse;
@@ -59,7 +60,8 @@ public final class ObjectsRenderer implements Renderer
 			}
 		}
 
-		context.imageRenderer().draw( graphics.texture(), 0, 0, context.pixelWidth(), context.pixelHeight() );
+		context.glare().getProgram( GlareTextureProgram.class ).
+				draw( graphics.texture(), 0, 0, context.pixelWidth(), context.pixelHeight() );
 	}
 
 	private void render( @Nonnull final ObjectRectangle objectRectangle )

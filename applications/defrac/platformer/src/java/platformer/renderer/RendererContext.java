@@ -1,6 +1,6 @@
 package platformer.renderer;
 
-import platformer.gl.GLRenderer;
+import platformer.glare.Glare;
 import platformer.tmx.TileSet;
 
 import javax.annotation.Nonnull;
@@ -67,10 +67,10 @@ public interface RendererContext
 	TileSet[] tileSets();
 
 	/**
-	 * @return The ImageRenderer to render images in GL context
+	 * @return The Glare instance
 	 */
 	@Nonnull
-	GLRenderer imageRenderer();
+	Glare glare();
 
 	/**
 	 * @return The currentTime in milliseconds for animations

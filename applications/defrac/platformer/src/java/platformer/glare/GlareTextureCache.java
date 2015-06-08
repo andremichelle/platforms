@@ -1,4 +1,4 @@
-package platformer.gl;
+package platformer.glare;
 
 import defrac.display.TextureData;
 import defrac.gl.GL;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * @author Andre Michelle
  */
-public final class GLTextureCache
+public final class GlareTextureCache
 {
 	private final HashMap<TextureData, GLTexture> cache = new HashMap<>();
 

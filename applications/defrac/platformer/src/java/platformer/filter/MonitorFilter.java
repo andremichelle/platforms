@@ -1,4 +1,4 @@
-package platformer.gl;
+package platformer.filter;
 
 import defrac.display.TextureData;
 import defrac.display.render.GLUniformLocationCache;

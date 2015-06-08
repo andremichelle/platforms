@@ -4,6 +4,7 @@ import defrac.display.Stage;
 import defrac.display.Stats;
 import defrac.display.graphics.Graphics;
 import platformer.Platformer;
+import platformer.glare.GlareTextureProgram;
 import platformer.renderer.ObjectsRenderer;
 import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
@@ -112,7 +113,7 @@ public final class Physics
 		@Override
 		public void requestRender( @Nonnull final RendererContext context )
 		{
-			context.imageRenderer().draw(
+			context.glare().getProgram( GlareTextureProgram.class ).draw(
 					graphics.texture(),
 					x - context.offsetX(),
 					y - context.offsetY() - Size + context.tileHeight(),
