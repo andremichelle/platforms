@@ -8,10 +8,11 @@ public final class Boot
 {
 	public static void main( String[] args )
 	{
-//		final Launch launch = Launch.SuperMario;
+		final Launch launch = Launch.SuperMario;
 //		final Launch launch = Launch.SuperMarioSurface;
 //		final Launch launch = Launch.Physics;
-		final Launch launch = Launch.GripeGame;
+//		final Launch launch = Launch.Performance;
+//		final Launch launch = Launch.GripeGame;
 //		final Launch launch = Launch.DepthSorting;
 
 		Dispatchers.FOREGROUND.exec( () -> FrameBuilder.

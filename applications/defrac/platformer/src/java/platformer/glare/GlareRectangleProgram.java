@@ -134,6 +134,17 @@ public final class GlareRectangleProgram implements GlareProgram
 	}
 
 	@Nonnull
+	public GlareRectangleProgram color( final float r, final float g, final float b, final float a )
+	{
+		color[ 0 ] = r;
+		color[ 1 ] = g;
+		color[ 2 ] = b;
+		color[ 3 ] = a;
+
+		return this;
+	}
+
+	@Nonnull
 	public GlareRectangleProgram rect( final float x, final float y, final float width, final float height )
 	{
 		glare.activeProgram( this );

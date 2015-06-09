@@ -195,4 +195,39 @@ public interface Launch
 			return new CenteredDisplayListScreen( applications.Physics::new, width(), height() );
 		}
 	};
+
+	Launch Performance = new Launch()
+	{
+		@Nonnull
+		@Override
+		public String title()
+		{
+			return "Performance";
+		}
+
+		@Override
+		public int width()
+		{
+			return 1024;
+		}
+
+		@Override
+		public int height()
+		{
+			return 512;
+		}
+
+		@Override
+		public int backgroundColor()
+		{
+			return 0xFFFFFFFF;
+		}
+
+		@Nonnull
+		@Override
+		public Screen createScreen()
+		{
+			return new CenteredDisplayListScreen( applications.Performance::new, width(), height() );
+		}
+	};
 }
