@@ -139,8 +139,6 @@ public final class TileRenderer implements Renderer
 					}
 				}
 			}
-
-			//context.glare().getProgram( GlareRectangleProgram.class ).color( new float[]{ 1f, 1f, 0f, 1f } ).rect( 128, 64, 16, 16 );
 		}
 	}
 

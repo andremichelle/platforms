@@ -60,7 +60,7 @@ public final class GlareRectangleProgram implements GlareProgram
 				"	gl_FragColor = vColor;" +
 				"}";
 
-		color = new float[]{ 1f, 0f, 1f, 1f };
+		color = new float[]{ 1f, 1f, 1f, 1f };
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public final class GlareRectangleProgram implements GlareProgram
 		glSubstrate.enableVertexAttribArray( 0 );
 		glSubstrate.vertexAttribPointer( 0, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 0 );
 		glSubstrate.enableVertexAttribArray( 1 );
-		glSubstrate.vertexAttribPointer( 1, 2, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 2 * BufferSizeFloat );
+		glSubstrate.vertexAttribPointer( 1, 4, GL.FLOAT, false, BufferNumProperties * BufferSizeFloat, 2 * BufferSizeFloat );
 
 		glSubstrate.bindBuffer( GL.ARRAY_BUFFER, glare.glBuffer );
 		glSubstrate.bufferSubData( GL.ARRAY_BUFFER, 0, glare.buffer, 0, glare.bufferPointer );
@@ -153,8 +153,8 @@ public final class GlareRectangleProgram implements GlareProgram
 		final float b = color[ 2 ];
 		final float a = color[ 3 ];
 
-		// TODO Test
-		final float brightness = 0.5f;
+		// TODO Write different methods for gradients
+		final float brightness = 1.0f;
 
 		int bufferPointer = glare.bufferPointer;
 

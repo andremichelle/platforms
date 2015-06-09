@@ -309,5 +309,8 @@ public final class Platformer implements RendererContext
 
 		// TODO Graphics returns a pre-multiplied alpha :(
 		glare.getProgram( GlareTextureProgram.class ).alpha( 1f ).draw( lazyGraphics.texture(), 0, 0, pixelWidth, pixelHeight );
+
+		// TEST other programs
+		glare.getProgram( GlareRectangleProgram.class ).color( new float[]{ 1f, 1f, 0f, 0.7f } ).rect( 128, 64, 16, 16 );
 	}
 }
