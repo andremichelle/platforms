@@ -24,6 +24,8 @@ public class GlareTextureProgram implements GlareProgram
 	protected static final int BufferNumVertices = 6;
 	protected static final int BufferTextureSize = BufferNumProperties * BufferNumVertices;
 
+	private final float[] color = new float[]{ 1f, 1f, 1f, 1f };
+
 	private final Glare glare;
 	private final String fCode;
 	private final String vCode;
@@ -35,10 +37,9 @@ public class GlareTextureProgram implements GlareProgram
 	@Nullable
 	private GLUniformLocation textureLocation;
 	@Nullable
-	private GLUniformLocation alphaLocation;
+	private GLUniformLocation colorLocation;
 	@Nullable
 	private TextureData textureData;
-	private float alpha = 1f;
 
 	public GlareTextureProgram( @Nonnull final Glare glare )
 	{
@@ -52,16 +53,14 @@ public class GlareTextureProgram implements GlareProgram
 						"void main()" +
 						"{" +
 						"	vUv = uv;" +
-						"	gl_Position = pMatrix * vec4( position, 0, 1 );" +
+						"	gl_Position = pMatrix * vec4(position, 0, 1);" +
 						"}", "" +
 						"uniform sampler2D texture;" +
-						"uniform float alpha;" +
+						"uniform vec4 color;" +
 						"varying vec2 vUv;" +
 						"void main()" +
 						"{" +
-						" vec4 pixel = texture2D( texture, vUv );" +
-						" pixel.a *= alpha;" +
-						" gl_FragColor = vec4( pixel.rgb / pixel.a, pixel.a );" +
+						"	gl_FragColor = texture2D(texture, vUv) * color;" +
 						"}"
 		);
 	}
@@ -97,7 +96,7 @@ public class GlareTextureProgram implements GlareProgram
 
 		matrixLocation = glSubstrate.getUniformLocation( program, "pMatrix" );
 		textureLocation = glSubstrate.getUniformLocation( program, "texture" );
-		alphaLocation = glSubstrate.getUniformLocation( program, "alpha" );
+		colorLocation = glSubstrate.getUniformLocation( program, "color" );
 
 		initUniforms( glSubstrate, program );
 	}
@@ -111,7 +110,7 @@ public class GlareTextureProgram implements GlareProgram
 	@Override
 	public final void finalizeDraw( @Nonnull final GLSubstrate glSubstrate )
 	{
-		assert null != matrixLocation && null != textureLocation && null != alphaLocation;
+		assert null != matrixLocation && null != textureLocation && null != colorLocation;
 
 		assert null != textureData : "No texture data but a flush requirement?";
 
@@ -121,7 +120,7 @@ public class GlareTextureProgram implements GlareProgram
 		glSubstrate.useProgram( program );
 		glSubstrate.uniformMatrix4fv( matrixLocation, false, glare.glMatrix.values );
 		glSubstrate.uniform1i( textureLocation, 0 );
-		glSubstrate.uniform1f( alphaLocation, alpha );
+		glSubstrate.uniform4fv( colorLocation, color );
 
 		applyUniforms( glSubstrate );
 
@@ -155,12 +154,12 @@ public class GlareTextureProgram implements GlareProgram
 	@Nonnull
 	public GlareTextureProgram alpha( final float value )
 	{
-		if( alpha != value )
+		if( color[3] != value )
 		{
 			glare.activeProgram( this );
 			glare.flush();
 
-			alpha = value;
+			color[3] = value;
 		}
 
 		return this;

@@ -292,7 +292,7 @@ public final class Platformer implements RendererContext
 			lazyGraphics = new Graphics( pixelWidth, pixelHeight );
 
 		lazyGraphics.clearRect( 0, 0, pixelWidth, pixelHeight );
-		lazyGraphics.fillStyle( 1f, 1f, 1f, 1f );
+		lazyGraphics.fillStyle( 0f, 0f, 0f, 1f );
 		lazyGraphics.textBaseline( TextBaseline.TOP );
 
 		int top = 4;
@@ -307,6 +307,7 @@ public final class Platformer implements RendererContext
 				break;
 		}
 
+		// TODO Graphics returns a pre-multiplied alpha :(
 		glare.getProgram( GlareTextureProgram.class ).alpha( 1f ).draw( lazyGraphics.texture(), 0, 0, pixelWidth, pixelHeight );
 	}
 }
