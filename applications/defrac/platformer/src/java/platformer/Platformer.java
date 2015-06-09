@@ -2,6 +2,8 @@ package platformer;
 
 import defrac.display.DisplayObject;
 import defrac.display.GLSurface;
+import defrac.display.graphics.Graphics;
+import defrac.display.graphics.TextBaseline;
 import defrac.gl.GLFrameBuffer;
 import defrac.gl.GLSubstrate;
 import defrac.lang.Lists;
@@ -15,9 +17,9 @@ import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
 import platformer.tmx.MapData;
 import platformer.tmx.TileSet;
-import platformer.utils.TinyConsole;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -35,6 +37,9 @@ public final class Platformer implements RendererContext
 	private final Glare glare;
 
 	private final List<Renderer> renderPipe;
+
+	@Nullable
+	private Graphics lazyGraphics;
 
 	private long startTime;
 	private int time;
@@ -219,7 +224,6 @@ public final class Platformer implements RendererContext
 	{
 		return new GLSurface( pixelWidth, pixelHeight, ( surface1, gl, frameBuffer, renderBuffer, surfaceTexture, width, height, viewportWidth, viewportHeight, transparent ) -> {
 			renderCycle( gl );
-			TinyConsole.get().log( "Calls " + glare.drawCalls );
 		} );
 	}
 
@@ -253,6 +257,17 @@ public final class Platformer implements RendererContext
 		};
 	}
 
+	@Override
+	public String toString()
+	{
+		return "[Screen" +
+				" width: " + width +
+				", height: " + height +
+				", pixelWidth: " + pixelWidth +
+				", pixelHeight: " + pixelHeight +
+				"]";
+	}
+
 	private void renderCycle( @Nonnull final GLSubstrate glSubstrate )
 	{
 		time = ( int ) ( System.currentTimeMillis() - startTime );
@@ -264,17 +279,34 @@ public final class Platformer implements RendererContext
 			pipe.renderLayer();
 		}
 
+		glare.flush();
+
+		log( "GPU #" + glare.drawCalls );
+
 		glare.complete();
 	}
 
-	@Override
-	public String toString()
+	private void log( @Nonnull final String... lines )
 	{
-		return "[Screen" +
-				" width: " + width +
-				", height: " + height +
-				", pixelWidth: " + pixelWidth +
-				", pixelHeight: " + pixelHeight +
-				"]";
+		if( null == lazyGraphics )
+			lazyGraphics = new Graphics( pixelWidth, pixelHeight );
+
+		lazyGraphics.clearRect( 0, 0, pixelWidth, pixelHeight );
+		lazyGraphics.fillStyle( 1f, 1f, 1f, 1f );
+		lazyGraphics.textBaseline( TextBaseline.TOP );
+
+		int top = 4;
+
+		for( final String line : lines )
+		{
+			lazyGraphics.fillText( line, 4, top );
+
+			top += 12;
+
+			if( top > pixelHeight )
+				break;
+		}
+
+		glare.getProgram( GlareTextureProgram.class ).alpha( 1f ).draw( lazyGraphics.texture(), 0, 0, pixelWidth, pixelHeight );
 	}
 }

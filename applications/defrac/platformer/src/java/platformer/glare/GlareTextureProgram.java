@@ -60,7 +60,8 @@ public class GlareTextureProgram implements GlareProgram
 						"void main()" +
 						"{" +
 						" vec4 pixel = texture2D( texture, vUv );" +
-						" gl_FragColor = vec4( pixel.rgb, pixel.a * alpha );" +
+						" pixel.a *= alpha;" +
+						" gl_FragColor = vec4( pixel.rgb / pixel.a, pixel.a );" +
 						"}"
 		);
 	}
@@ -151,7 +152,8 @@ public class GlareTextureProgram implements GlareProgram
 		}
 	}
 
-	public final void alpha( final float value )
+	@Nonnull
+	public GlareTextureProgram alpha( final float value )
 	{
 		if( alpha != value )
 		{
@@ -160,6 +162,8 @@ public class GlareTextureProgram implements GlareProgram
 
 			alpha = value;
 		}
+
+		return this;
 	}
 
 	/**

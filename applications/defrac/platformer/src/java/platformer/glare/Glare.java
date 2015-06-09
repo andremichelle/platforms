@@ -153,13 +153,15 @@ public final class Glare
 		}
 	}
 
-	public void complete()
+	public int complete()
 	{
 		flush();
 
 		bufferPointer = 0;
 		glSubstrate = null;
 		program = null;
+
+		return drawCalls;
 	}
 
 	public void flush()
