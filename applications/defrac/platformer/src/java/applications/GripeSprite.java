@@ -212,13 +212,13 @@ public final class GripeSprite implements Sprite
 	}
 
 	@Override
-	public int x()
+	public float x()
 	{
 		return ( int ) positionX;
 	}
 
 	@Override
-	public int y()
+	public float y()
 	{
 		return ( int ) positionY;
 	}

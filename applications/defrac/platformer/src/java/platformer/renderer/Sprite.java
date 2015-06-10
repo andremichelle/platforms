@@ -7,9 +7,9 @@ import javax.annotation.Nonnull;
  */
 public interface Sprite
 {
-	int x();
+	float x();
 
-	int y();
+	float y();
 
 	int width();
 

@@ -21,6 +21,14 @@ public final class MapTileLayer extends MapLayer
 		this.data = data;
 	}
 
+	public int getTileAt( final int x, final int y )
+	{
+		if( 0 > x || x >= width || 0 > y || y >= height )
+			return -1;
+
+		return data[ y * width + x ];
+	}
+
 	@Override
 	public String toString()
 	{

@@ -146,13 +146,13 @@ public final class DepthSorting
 		}
 
 		@Override
-		public int x()
+		public float x()
 		{
 			return x;
 		}
 
 		@Override
-		public int y()
+		public float y()
 		{
 			return y;
 		}

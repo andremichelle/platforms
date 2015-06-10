@@ -68,6 +68,8 @@ public interface RendererContext
 
 	/**
 	 * @return The Glare instance
+	 *
+	 * @throws Runtime exception when glare is not in render phase.
 	 */
 	@Nonnull
 	Glare glare();

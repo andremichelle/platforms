@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="16" tilewidth="32" tileheight="32" backgroundcolor="#fffff2" nextobjectid="7">
- <objectgroup name="collision">
+ <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32">
+  <image source="tiles.png" width="256" height="512"/>
+ </tileset>
+ <objectgroup name="collision" visible="0">
   <object id="4" name="GateTest" type="gate" x="128" y="288">
    <polyline points="0,0 224,0 320,-96 416,-96 512,0 608,0 608,96 640,96 640,0 736,0 736,-96"/>
   </object>
@@ -8,4 +11,9 @@
    <polyline points="0,0 1024,0"/>
   </object>
  </objectgroup>
+ <layer name="blocks" width="32" height="16">
+  <data encoding="base64" compression="zlib">
+   eJzLZ2BgyB/FRIN8NJpcMGo/efZTCxCynxT3keMXYuwnB1DT/oH0P63BULV/oPPfcLV/pGIAjVBZUw==
+  </data>
+ </layer>
 </map>

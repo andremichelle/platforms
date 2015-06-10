@@ -9,6 +9,7 @@ import defrac.gl.GLSubstrate;
 import defrac.lang.Lists;
 import defrac.util.Color;
 import platformer.glare.Glare;
+import platformer.glare.GlareLineProgram;
 import platformer.glare.GlareRectangleProgram;
 import platformer.glare.GlareTextureProgram;
 import platformer.glare.GlareTextureProgramAperture;
@@ -60,6 +61,7 @@ public final class Platformer implements RendererContext
 				addProgram( GlareTextureProgram.class, GlareTextureProgram::new ).
 				addProgram( GlareTextureProgramAperture.class, GlareTextureProgramAperture::new ).
 				addProgram( GlareRectangleProgram.class, GlareRectangleProgram::new ).
+				addProgram( GlareLineProgram.class, GlareLineProgram::new ).
 				build();
 		glare.background( Color.extract( mapData.backgroundColor, new float[ 4 ] ) );
 
@@ -197,7 +199,7 @@ public final class Platformer implements RendererContext
 	 */
 	public void center( @Nonnull final Sprite sprite )
 	{
-		moveTo( sprite.x() + ( sprite.width() - pixelWidth ) / 2, sprite.y() - pixelHeight / 2 );
+		moveTo( ( int ) sprite.x() + ( sprite.width() - pixelWidth ) / 2, ( int ) sprite.y() - pixelHeight / 2 );
 	}
 
 	/**

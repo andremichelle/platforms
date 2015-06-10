@@ -13,16 +13,14 @@ import static platformer.glare.GlareProgram.createShader;
 import static platformer.glare.GlareProgram.linkProgram;
 
 /**
- * Draft
- *
  * @author Andre Michelle
  */
-public final class GlareRectangleProgram implements GlareProgram
+public final class GlareLineProgram implements GlareProgram
 {
 	private static final int BufferSizeFloat = 4;
 	private static final int BufferNumProperties = 6;
-	private static final int BufferNumVertices = 6;
-	private static final int BufferRectangleSize = BufferNumProperties * BufferNumVertices;
+	private static final int BufferNumVertices = 2;
+	private static final int BufferLineSize = BufferNumProperties * BufferNumVertices;
 
 	private final Glare glare;
 	private final String vCode;
@@ -35,7 +33,7 @@ public final class GlareRectangleProgram implements GlareProgram
 	@Nullable
 	private GLUniformLocation matrixLocation;
 
-	public GlareRectangleProgram( @Nonnull final Glare glare )
+	public GlareLineProgram( @Nonnull final Glare glare )
 	{
 		this.glare = glare;
 
@@ -65,7 +63,7 @@ public final class GlareRectangleProgram implements GlareProgram
 	@Override
 	public int bufferCapacity()
 	{
-		return 256 * BufferRectangleSize * BufferSizeFloat;
+		return 256 * BufferLineSize * BufferSizeFloat;
 	}
 
 	@Override
@@ -111,7 +109,7 @@ public final class GlareRectangleProgram implements GlareProgram
 
 		glSubstrate.bindBuffer( GL.ARRAY_BUFFER, glare.glBuffer );
 		glSubstrate.bufferSubData( GL.ARRAY_BUFFER, 0, glare.buffer, 0, glare.bufferPointer );
-		glSubstrate.drawArrays( GL.TRIANGLES, 0, glare.bufferPointer / BufferNumProperties );
+		glSubstrate.drawArrays( GL.LINES, 0, glare.bufferPointer / BufferNumProperties );
 	}
 
 	@Override
@@ -125,7 +123,7 @@ public final class GlareRectangleProgram implements GlareProgram
 	}
 
 	@Nonnull
-	public GlareRectangleProgram color( @Nonnull final float[] rgba )
+	public GlareLineProgram color( @Nonnull final float[] rgba )
 	{
 		System.arraycopy( rgba, 0, color, 0, 4 );
 
@@ -133,7 +131,7 @@ public final class GlareRectangleProgram implements GlareProgram
 	}
 
 	@Nonnull
-	public GlareRectangleProgram color( final float r, final float g, final float b, final float a )
+	public GlareLineProgram color( final float r, final float g, final float b, final float a )
 	{
 		color[ 0 ] = r;
 		color[ 1 ] = g;
@@ -144,68 +142,45 @@ public final class GlareRectangleProgram implements GlareProgram
 	}
 
 	@Nonnull
-	public GlareRectangleProgram rect( final float x, final float y, final float width, final float height )
+	public GlareLineProgram line( final float x0, final float y0, final float x1, final float y1 )
 	{
 		glare.activeProgram( this );
 
-		// TODO Move overflow test to Glare
-		// TODO Write strategies for distributing colors to each vertices
-
-		if( glare.bufferPointer + BufferRectangleSize >= glare.bufferSize ) // avoid overflow
+		if( glare.bufferPointer + BufferLineSize >= glare.bufferSize ) // avoid overflow
 			glare.flush();
 
 		final float[] buffer = glare.buffer;
 
-		final float right = x + width;
-		final float bottom = y + height;
 		final float r = color[ 0 ];
 		final float g = color[ 1 ];
 		final float b = color[ 2 ];
 		final float a = color[ 3 ];
 
-		// TODO Write different methods for gradients
-		final float brightness = 1.0f;
-
 		int bufferPointer = glare.bufferPointer;
-
-		buffer[ bufferPointer++ ] = x;
-		buffer[ bufferPointer++ ] = y;
+		buffer[ bufferPointer++ ] = x0;
+		buffer[ bufferPointer++ ] = y0;
 		buffer[ bufferPointer++ ] = r;
 		buffer[ bufferPointer++ ] = g;
 		buffer[ bufferPointer++ ] = b;
 		buffer[ bufferPointer++ ] = a;
-		buffer[ bufferPointer++ ] = right;
-		buffer[ bufferPointer++ ] = y;
+		buffer[ bufferPointer++ ] = x1;
+		buffer[ bufferPointer++ ] = y1;
 		buffer[ bufferPointer++ ] = r;
 		buffer[ bufferPointer++ ] = g;
 		buffer[ bufferPointer++ ] = b;
 		buffer[ bufferPointer++ ] = a;
-		buffer[ bufferPointer++ ] = right;
-		buffer[ bufferPointer++ ] = bottom;
-		buffer[ bufferPointer++ ] = r * brightness;
-		buffer[ bufferPointer++ ] = g * brightness;
-		buffer[ bufferPointer++ ] = b * brightness;
-		buffer[ bufferPointer++ ] = a;
-		buffer[ bufferPointer++ ] = x;
-		buffer[ bufferPointer++ ] = y;
-		buffer[ bufferPointer++ ] = r;
-		buffer[ bufferPointer++ ] = g;
-		buffer[ bufferPointer++ ] = b;
-		buffer[ bufferPointer++ ] = a;
-		buffer[ bufferPointer++ ] = right;
-		buffer[ bufferPointer++ ] = bottom;
-		buffer[ bufferPointer++ ] = r * brightness;
-		buffer[ bufferPointer++ ] = g * brightness;
-		buffer[ bufferPointer++ ] = b * brightness;
-		buffer[ bufferPointer++ ] = a;
-		buffer[ bufferPointer++ ] = x;
-		buffer[ bufferPointer++ ] = bottom;
-		buffer[ bufferPointer++ ] = r * brightness;
-		buffer[ bufferPointer++ ] = g * brightness;
-		buffer[ bufferPointer++ ] = b * brightness;
-		buffer[ bufferPointer++ ] = a;
-
 		glare.bufferPointer = bufferPointer;
+		return this;
+	}
+
+	@Nonnull
+	public GlareLineProgram outlineRect( final float x, final float y, final float w, final float h )
+	{
+		line( x, y, x + w, y );
+		line( x + w, y, x + w, y + h );
+		line( x + w, y + h, x, y + h );
+		line( x, y + h, x, y );
+
 		return this;
 	}
 }

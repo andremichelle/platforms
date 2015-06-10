@@ -15,6 +15,10 @@ import java.util.Map;
  *
  * Each program is a single-ton inside the Glare, strictly bounded to its Glare instance.
  *
+ * @Joa:
+ * web texture size pow2
+ * retina blurry
+ *
  * @author Andre Michelle
  */
 public final class Glare
@@ -56,7 +60,6 @@ public final class Glare
 
 	@Nullable
 	private GLSubstrate glSubstrate;
-
 
 	@Nullable
 	public GLBuffer glBuffer;
@@ -145,6 +148,9 @@ public final class Glare
 
 	public void activeProgram( @Nonnull final GlareProgram program )
 	{
+		if( null == glSubstrate )
+			throw new RuntimeException( "Glare cannot be accessed when not in render phase." );
+
 		if( this.program != program )
 		{
 			flush();
@@ -155,6 +161,9 @@ public final class Glare
 
 	public int complete()
 	{
+		if( null == glSubstrate )
+			throw new RuntimeException( "Glare cannot be accessed when not in render phase." );
+
 		flush();
 
 		bufferPointer = 0;
@@ -166,7 +175,8 @@ public final class Glare
 
 	public void flush()
 	{
-		assert null != glSubstrate : "Phase error.";
+		if( null == glSubstrate )
+			throw new RuntimeException( "Glare cannot be accessed when not in render phase." );
 
 		if( null == program || 0 == bufferPointer )
 			return;

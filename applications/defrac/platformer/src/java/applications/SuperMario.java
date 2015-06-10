@@ -52,8 +52,8 @@ public final class SuperMario
 					platformer.addRenderer( new ObjectsRenderer( platformer, ( MapObjectGroupLayer ) mapLayer ) );
 			}
 
-			final DisplayObject stageObject = stage.addChild( platformer.createDisplayObject() ).filter( MonitorFilter );
-
+			final DisplayObject stageObject = platformer.createDisplayObject().filter( MonitorFilter );
+			stage.addChild( stageObject );
 			platformer.restartTime();
 
 			System.out.println( "all set... (use cursor keys to navigate)" );

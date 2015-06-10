@@ -159,7 +159,7 @@ public final class TileRenderer implements Renderer
 		} );
 
 		for( final Sprite sprite : sprites )
-			if( rowIndex == sprite.y() / context.tileHeight() + 1 )
+			if( rowIndex == ( int ) sprite.y() / context.tileHeight() + 1 )
 				sprite.requestRender( context );
 	}
 }

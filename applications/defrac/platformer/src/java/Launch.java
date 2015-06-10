@@ -179,7 +179,7 @@ public interface Launch
 		@Override
 		public int height()
 		{
-			return 512 + 64;
+			return 512;
 		}
 
 		@Override
