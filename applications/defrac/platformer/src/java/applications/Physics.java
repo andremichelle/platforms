@@ -66,8 +66,8 @@ public final class Physics
 
 	private static class PathSprite implements Sprite
 	{
-		private static final int Width = 3;
-		private static final int Height = 3;
+		private static final int Width = 16;
+		private static final int Height = 16;
 
 		private final TilesRayCast caster;
 
@@ -92,7 +92,7 @@ public final class Physics
 				{
 					final float distance = caster.solve( PathSprite.this, vx, vy );
 
-					if( distance >= remainingTime )
+					if( distance >= 1f )
 						break;
 
 					// Move to touch point
@@ -115,7 +115,7 @@ public final class Physics
 							break;
 					}
 
-					remainingTime -= distance;
+					remainingTime -= distance * remainingTime;
 				}
 
 				sx += vx * remainingTime;
