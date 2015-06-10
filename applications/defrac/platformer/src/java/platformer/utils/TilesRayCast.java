@@ -14,10 +14,16 @@ import javax.annotation.Nonnull;
  */
 public final class TilesRayCast
 {
+	public static final int Top = 0;
+	public static final int Right = 1;
+	public static final int Bottom = 2;
+	public static final int Left = 3;
+
 	private static final class State
 	{
 		private float min;
 		private int tile;
+		private int border;
 	}
 
 	private final MapTileLayer layer;
@@ -39,6 +45,7 @@ public final class TilesRayCast
 	{
 		state.min = Float.MAX_VALUE;
 		state.tile = -1;
+		state.border = -1;
 
 		final float px = sprite.x();
 		final float py = sprite.y();
@@ -97,6 +104,11 @@ public final class TilesRayCast
 		return state.tile;
 	}
 
+	public int lastBorder()
+	{
+		return state.border;
+	}
+
 	private void castLeft( final float px, final float py, final float vx, final float vy )
 	{
 		final float over = -vy / vx;
@@ -123,6 +135,7 @@ public final class TilesRayCast
 				{
 					state.min = dd;
 					state.tile = tile;
+					state.border = Right;
 				}
 				break;
 			}
@@ -155,6 +168,7 @@ public final class TilesRayCast
 				{
 					state.min = dd;
 					state.tile = tile;
+					state.border = Bottom;
 				}
 				break;
 			}
@@ -174,6 +188,7 @@ public final class TilesRayCast
 			{
 				state.min = 0;
 				state.tile = tile;
+				state.border = Top;
 				return;
 			}
 		}
@@ -202,6 +217,7 @@ public final class TilesRayCast
 				{
 					state.min = dd;
 					state.tile = tile;
+					state.border = Top;
 				}
 				break;
 			}
@@ -221,6 +237,7 @@ public final class TilesRayCast
 			{
 				state.min = 0;
 				state.tile = tile;
+				state.border = Left;
 				return;
 			}
 		}
@@ -249,6 +266,7 @@ public final class TilesRayCast
 				{
 					state.min = dd;
 					state.tile = tile;
+					state.border = Left;
 				}
 				break;
 			}

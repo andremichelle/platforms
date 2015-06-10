@@ -1,10 +1,8 @@
 package applications;
 
 import defrac.display.Stage;
-import defrac.display.event.UIEventManager;
-import defrac.geom.Point;
 import platformer.Platformer;
-import platformer.glare.GlareLineProgram;
+import platformer.glare.GlareRectangleProgram;
 import platformer.renderer.ObjectsRenderer;
 import platformer.renderer.RendererContext;
 import platformer.renderer.Sprite;
@@ -34,7 +32,7 @@ public final class Physics
 
 			MapTileLayer blocks = null;
 
-			final Platformer platformer = new Platformer( mapData, 32, 16 );
+			final Platformer platformer = new Platformer( mapData, 32, 24 );
 
 			for( final MapLayer mapLayer : mapData.mapLayers )
 			{
@@ -68,55 +66,75 @@ public final class Physics
 
 	private static class PathSprite implements Sprite
 	{
-		private static final int Width = 32;
-		private static final int Height = 32;
+		private static final int Width = 3;
+		private static final int Height = 3;
 
-		private final Point mouse;
-		private final MapTileLayer tiles;
 		private final TilesRayCast caster;
 
-		private float x0 = 32 * 13;
-		private float y0 = 32 * 7;
-		private float x1 = 0;
-		private float y1 = 0;
+		private float sx = 32 * 13;
+		private float sy = 32 * 7;
+		private float vx;
+		private float vy;
 
 		public PathSprite( @Nonnull final Stage stage, @Nonnull final Platformer platformer, @Nonnull final MapTileLayer tiles )
 		{
-			this.tiles = tiles;
-
 			caster = new TilesRayCast( tiles, platformer.tileWidth(), platformer.tileHeight() );
 
-			mouse = new Point();
+			vx = -4f;
+			vy = -4f;
 
-			final UIEventManager eventManager = stage.eventManager();
-			stage.globalEvents().onEnterFrame.add( ( evt ) -> {
-				eventManager.pointerPos( mouse, 0 );
-				x1 = ( int ) mouse.x - Width / 2;
-				y1 = ( int ) mouse.y - platformer.tileHeight() + Height / 2;
-			} );
-			stage.globalEvents().onPointerDown.add( ( evt ) -> {
+			stage.globalEvents().onEnterFrame.add( e -> {
+				float remainingTime = 1f;
+
+				vy += 0.1;
+
+				while( 0.0f < remainingTime )
 				{
-					float tmp;
-					tmp = x0;
-					x0 = x1;
-					x1 = tmp;
-					tmp = y0;
-					y0 = y1;
-					y1 = tmp;
+					final float distance = caster.solve( PathSprite.this, vx, vy );
+
+					if( distance >= remainingTime )
+						break;
+
+					// Move to touch point
+					sx += vx * distance;
+					sy += vy * distance;
+
+					// Resolve Collision
+					final int border = caster.lastBorder();
+
+					switch( border )
+					{
+						case TilesRayCast.Left:
+						case TilesRayCast.Right:
+							vx = -vx;
+							break;
+
+						case TilesRayCast.Top:
+						case TilesRayCast.Bottom:
+							vy = -vy;
+							break;
+					}
+
+					remainingTime -= distance;
 				}
+
+				sx += vx * remainingTime;
+				sy += vy * remainingTime;
+
+				platformer.center( PathSprite.this );
 			} );
 		}
 
 		@Override
 		public float x()
 		{
-			return x0;
+			return sx;
 		}
 
 		@Override
 		public float y()
 		{
-			return y0;
+			return sy;
 		}
 
 		@Override
@@ -134,27 +152,9 @@ public final class Physics
 		@Override
 		public void requestRender( @Nonnull final RendererContext context )
 		{
-			drawPhases( context, x0, y0 );
-			drawPhases( context, x1, y1 );
-
-			final float distance = caster.solve( this, x1 - x0, y1 - y0 );
-
-			if( distance <= 1.0f )
-			{
-				drawPhases( context, x0 + distance * ( x1 - x0 ), y0 + distance * ( y1 - y0 ), 1f );
-			}
-		}
-
-		private void drawPhases( @Nonnull final RendererContext context, final float x, final float y )
-		{
-			drawPhases( context, x, y, 1f );
-		}
-
-		private void drawPhases( @Nonnull final RendererContext context, final float x, final float y, final float alpha )
-		{
-			context.glare().getProgram( GlareLineProgram.class ).color( 1f, 0f, 0f, alpha ).outlineRect(
-					x - context.offsetX(),
-					y - context.offsetY() - Height + context.tileHeight(),
+			context.glare().getProgram( GlareRectangleProgram.class ).color( 0.5f, 0.5f, 0.5f, 1f ).rect(
+					sx - context.offsetX(),
+					sy - context.offsetY() - Height + context.tileHeight(),
 					Width, Height );
 		}
 	}

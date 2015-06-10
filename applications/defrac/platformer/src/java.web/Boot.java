@@ -33,6 +33,10 @@ public final class Boot
 		{
 			app = Launch.GripeGame;
 		}
+		else if( hash.contains( "Physics" ) )
+		{
+			app = Launch.Physics;
+		}
 		else
 		{
 			app = Launch.SuperMario;

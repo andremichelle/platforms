@@ -173,13 +173,13 @@ public interface Launch
 		@Override
 		public int width()
 		{
-			return 1024;
+			return 512;
 		}
 
 		@Override
 		public int height()
 		{
-			return 512;
+			return 384;
 		}
 
 		@Override
