@@ -1,19 +1,19 @@
 function onLoad() {
     const choose = document.querySelector('input[type="file"]');
-	const loadDemoButton = document.querySelector('button[demo]');
-	const loadDemoBigButton = document.querySelector('button[demo-big]');
-	const tileWidthInput = document.querySelector('input[name="tile-width"]');
-	const tileHeightInput = document.querySelector('input[name="tile-height"]');
-	const toleranceInput = document.querySelector('input[name="tolerance"]');
-	const progress = document.querySelector('progress');
-	const consoleLayer = document.querySelector('div[console]');
-	const tilesLayer = document.querySelector('div[tiles]');
-	const tilesetLayer = document.querySelector('div[tileset]');
-	const resultLayer = document.querySelector('div[result]');
-	const downloadMapLink = document.querySelector("a[download-map]");
-	const downloadTilesLink = document.querySelector("a[download-tiles]");
-	const downloadTileMapLink = document.querySelector("a[download-tilemap]");
-	const downloadTiledTMXLink = document.querySelector("a[download-tmx]");
+    const loadDemoButton = document.querySelector('button[demo]');
+    const loadDemoBigButton = document.querySelector('button[demo-big]');
+    const tileWidthInput = document.querySelector('input[name="tile-width"]');
+    const tileHeightInput = document.querySelector('input[name="tile-height"]');
+    const toleranceInput = document.querySelector('input[name="tolerance"]');
+    const progress = document.querySelector('progress');
+    const consoleLayer = document.querySelector('div[console]');
+    const tilesLayer = document.querySelector('div[tiles]');
+    const tilesetLayer = document.querySelector('div[tileset]');
+    const resultLayer = document.querySelector('div[result]');
+    const downloadMapLink = document.querySelector("a[download-map]");
+    const downloadTilesLink = document.querySelector("a[download-tiles]");
+    const downloadTileMapLink = document.querySelector("a[download-tilemap]");
+    const downloadTiledTMXLink = document.querySelector("a[download-tmx]");
 
     let map = null;
     let tiles = null;
@@ -58,9 +58,9 @@ function onLoad() {
     function log(header, content) {
         const line = document.createElement("p");
         line.setAttribute("fine", "");
-		const spanHeader = document.createElement("span");
+        const spanHeader = document.createElement("span");
         spanHeader.textContent = header;
-		const spanContent = document.createElement("span");
+        const spanContent = document.createElement("span");
         spanContent.textContent = content;
         line.appendChild(spanHeader);
         line.appendChild(spanContent);
@@ -86,19 +86,25 @@ function onLoad() {
         return true;
     }
 
-    function extract(src) {
+    function readUI() {
         tileWidth = tileWidthInput.value | 0;
         tileHeight = tileHeightInput.value | 0;
-        source = new Image();
-        source.src = src;
-        source.onload = function () {
+        if (source) {
             sourceWidth = source.width;
             sourceHeight = source.height;
             numCols = sourceWidth / tileWidth;
             numRows = sourceHeight / tileHeight;
+        }
+    }
+
+    function extract(src) {
+        source = new Image();
+        source.src = src;
+        source.onload = function () {
+            readUI();
             if (checkSourceSize()) {
                 beginExtractionWorker();
-			}
+            }
         };
         source.onError = function () {
             error("Could not load image.");
@@ -109,7 +115,7 @@ function onLoad() {
         const canvas = document.createElement("canvas");
         canvas.setAttribute("width", source.width);
         canvas.setAttribute("height", source.height);
-		const context = canvas.getContext("2d");
+        const context = canvas.getContext("2d");
         context.drawImage(source, 0, 0, source.width, source.height);
         return context.getImageData(0, 0, source.width, source.height);
     }
@@ -124,24 +130,24 @@ function onLoad() {
         xmlMap.setAttribute("tilewidth", tileWidth);
         xmlMap.setAttribute("tileheight", tileHeight);
         xmlMap.setAttribute("nextobjectid", "1");
-		const xmlTileSet = document.createElement("tileset");
+        const xmlTileSet = document.createElement("tileset");
         xmlTileSet.setAttribute("firstgid", "1");
         xmlTileSet.setAttribute("name", "tiles");
         xmlTileSet.setAttribute("tilewidth", tileWidth);
         xmlTileSet.setAttribute("tileheight", tileHeight);
-		const xmlImage = document.createElement("image");
+        const xmlImage = document.createElement("image");
         xmlImage.setAttribute("source", "tiles.png");
         xmlImage.setAttribute("width", extractedTilesWidth);
         xmlImage.setAttribute("height", extractedTilesHeight);
         xmlTileSet.appendChild(xmlImage);
         xmlMap.appendChild(xmlTileSet);
-		const xmlLayer = document.createElement("layer");
+        const xmlLayer = document.createElement("layer");
         xmlLayer.setAttribute("name", "layer");
         xmlLayer.setAttribute("width", numCols);
         xmlLayer.setAttribute("height", numRows);
-		const xmlData = document.createElement("data");
+        const xmlData = document.createElement("data");
         for (let i = 0, n = map.length; i < n; ++i) {
-            let xmlTile = document.createElement("tile");
+            const xmlTile = document.createElement("tile");
             xmlTile.setAttribute("gid", map[i] + 1);
             xmlData.appendChild(xmlTile);
         }
@@ -156,7 +162,7 @@ function onLoad() {
         worker = new Worker('tileset-extractor-worker.js');
         worker.onmessage = function (event) {
             const data = event.data;
-			const action = data.action;
+            const action = data.action;
             if (action === "extract-start") {
                 progress.removeAttribute("hidden");
             } else if (action === "extract-progress") {
@@ -205,7 +211,7 @@ function onLoad() {
         const canvas = document.createElement('canvas');
         canvas.setAttribute("width", sourceWidth.toString());
         canvas.setAttribute("height", sourceHeight.toString());
-		const context = canvas.getContext('2d');
+        const context = canvas.getContext('2d');
         let index = 0;
         for (let y = 0; y < numRows; ++y)
             for (let x = 0; x < numCols; ++x)
@@ -219,17 +225,17 @@ function onLoad() {
         // Try to get as squared as possible
         //
         const numTiles = tiles.length;
-		const numRows = Math.sqrt(numTiles) | 0;
-		const numCols = Math.ceil(numTiles / numRows) | 0;
+        const numRows = Math.sqrt(numTiles) | 0;
+        const numCols = Math.ceil(numTiles / numRows) | 0;
         extractedTilesWidth = numCols * tileWidth;
         extractedTilesHeight = numRows * tileHeight;
-		const canvas = document.createElement("canvas");
+        const canvas = document.createElement("canvas");
         canvas.setAttribute("width", (extractedTilesWidth).toString());
         canvas.setAttribute("height", (extractedTilesHeight).toString());
-		const context = canvas.getContext('2d');
+        const context = canvas.getContext('2d');
         for (let i = 0; i < numTiles; ++i) {
-			const x = (i % numCols) * tileWidth;
-			const y = ((i / numCols) | 0) * tileHeight;
+            const x = (i % numCols) * tileWidth;
+            const y = ((i / numCols) | 0) * tileHeight;
             context.putImageData(tiles[i], x, y);
         }
         return canvas.toDataURL();
@@ -237,7 +243,7 @@ function onLoad() {
 
     choose.addEventListener("change", function (e) {
         fullReset();
-		const file = e.target.files[0];
+        const file = e.target.files[0];
         if (!file) {
             error("No file selected.");
             return;
@@ -261,9 +267,10 @@ function onLoad() {
             return;
         }
         reset();
+        readUI();
         beginExtractionWorker();
     };
-    toleranceInput.addEventListener("change",  changeListener);
-    tileWidthInput.addEventListener("change",  changeListener);
-    tileHeightInput.addEventListener("change",  changeListener);
+    toleranceInput.addEventListener("change", changeListener);
+    tileWidthInput.addEventListener("change", changeListener);
+    tileHeightInput.addEventListener("change", changeListener);
 }
